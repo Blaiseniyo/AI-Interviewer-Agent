@@ -95,31 +95,45 @@ export async function getLatestInterviews(
 ): Promise<Interview[] | null> {
   const { userId, limit = 20 } = params;
 
+  // Simplified query - only filter by finalized to avoid index requirement
   const interviews = await db
     .collection("interviews")
-    .orderBy("createdAt", "desc")
     .where("finalized", "==", true)
-    .where("userId", "!=", userId)
-    .limit(limit)
     .get();
 
-  return interviews.docs.map((doc) => ({
-    id: doc.id,
-    ...doc.data(),
-  })) as Interview[];
+  // Filter and sort in memory
+  const filteredInterviews = interviews.docs
+    .map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }))
+    .filter((interview: any) => interview.userId !== userId)
+    .sort((a: any, b: any) => {
+      // Sort by createdAt in descending order
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    })
+    .slice(0, limit) as Interview[];
+
+  return filteredInterviews;
 }
 
 export async function getInterviewsByUserId(
   userId: string
 ): Promise<Interview[] | null> {
+  // Simplified query without ordering to avoid index requirement
   const interviews = await db
     .collection("interviews")
     .where("userId", "==", userId)
-    .orderBy("createdAt", "desc")
     .get();
 
-  return interviews.docs.map((doc) => ({
+  // Sort in memory instead
+  const interviewData = interviews.docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),
   })) as Interview[];
+  
+  return interviewData.sort((a, b) => {
+    // Sort by createdAt in descending order
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  });
 }
