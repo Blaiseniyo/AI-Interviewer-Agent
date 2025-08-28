@@ -113,17 +113,23 @@ const Agent = ({
       }
     }
   }, [messages, callStatus, feedbackId, interviewId, router, type, userId]);
-
+  
   const handleCall = async () => {
     setCallStatus(CallStatus.CONNECTING);
 
     if (type === "generate") {
-      await vapi.start(process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!, {
-        variableValues: {
-          username: userName,
-          userid: userId,
-        },
-      });
+      await vapi.start(
+        undefined, // assistant
+        undefined, // assistantOverrides
+        undefined, // squad
+        process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID as string, // workflow
+        {
+          variableValues: {
+            username: userName,
+            userid: userId,
+          }
+        } // workflowOverrides
+      );
     } else {
       let formattedQuestions = "";
       if (questions) {
