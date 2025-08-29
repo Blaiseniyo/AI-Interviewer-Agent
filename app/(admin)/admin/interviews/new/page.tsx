@@ -10,7 +10,7 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, Plus, X } from "lucide-react";
+import { ArrowLeft, Plus, X, Upload, FileText } from "lucide-react";
 
 import { interviewFormSchema } from "@/types/validations";
 
@@ -19,12 +19,14 @@ type InterviewFormData = z.infer<typeof interviewFormSchema>;
 const CreateInterview = () => {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [rubricMode, setRubricMode] = useState<"text" | "pdf">("text");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [rubricText, setRubricText] = useState("");
 
   const {
     register,
     control,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<InterviewFormData>({
     resolver: zodResolver(interviewFormSchema),
@@ -34,18 +36,6 @@ const CreateInterview = () => {
       level: "Entry",
       techStack: "",
       questions: [""],
-      rubric: [
-        {
-          evaluation: "Communication Skills",
-          points: 50,
-          description: "Clarity, articulation, and structured responses",
-        },
-        {
-          evaluation: "Technical Knowledge",
-          points: 50,
-          description: "Understanding of key concepts for the role",
-        },
-      ],
     },
   });
 
@@ -58,17 +48,6 @@ const CreateInterview = () => {
     name: "questions",
   });
 
-  const {
-    fields: rubricFields,
-    append: appendRubric,
-    remove: removeRubric,
-  } = useFieldArray({
-    control,
-    name: "rubric",
-  });
-
-  const watchedRubric = watch("rubric");
-
   const addQuestion = () => {
     appendQuestion("");
   };
@@ -79,17 +58,13 @@ const CreateInterview = () => {
     }
   };
 
-  const addRubricCriteria = () => {
-    appendRubric({
-      evaluation: "",
-      points: 0,
-      description: "",
-    });
-  };
-
-  const removeRubricField = (index: number) => {
-    if (rubricFields.length > 1) {
-      removeRubric(index);
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file && file.type === "application/pdf") {
+      setSelectedFile(file);
+      console.log("PDF file selected:", file.name);
+    } else {
+      alert("Please select a valid PDF file");
     }
   };
 
@@ -102,10 +77,12 @@ const CreateInterview = () => {
       const interviewData = {
         ...data,
         questions: filteredQuestions,
+        rubricMode,
+        rubricText: rubricMode === "text" ? rubricText : null,
+        selectedFile: selectedFile?.name,
       };
 
       console.log("Creating interview:", interviewData);
-
       router.push("/admin");
     } catch (error) {
       console.error("Error creating interview:", error);
@@ -113,11 +90,6 @@ const CreateInterview = () => {
       setIsSubmitting(false);
     }
   };
-
-  const totalPoints = watchedRubric.reduce(
-    (sum, criterion) => sum + criterion.points,
-    0
-  );
 
   return (
     <div className="admin-layout">
@@ -145,7 +117,7 @@ const CreateInterview = () => {
                 <Label htmlFor="role">Interview Role</Label>
                 <Input
                   id="role"
-                  placeholder="e.g., Frontend Developer, Backend Engineer"
+                  placeholder="e.g., Frontend Developer, Backend Engineer, Product Manager"
                   {...register("role")}
                   className={errors.role ? "border-red-500" : ""}
                 />
@@ -159,6 +131,7 @@ const CreateInterview = () => {
               <div className="form-group">
                 <Label htmlFor="type">Interview Type</Label>
                 <select id="type" className="form-select" {...register("type")}>
+                  <option value="">Select interview type</option>
                   <option value="Technical">Technical</option>
                   <option value="Non-Technical">Non-Technical</option>
                   <option value="Mixed">Mixed</option>
@@ -172,6 +145,7 @@ const CreateInterview = () => {
                   className="form-select"
                   {...register("level")}
                 >
+                  <option value="">Select experience level</option>
                   <option value="Entry">Entry Level</option>
                   <option value="Mid">Mid Level</option>
                   <option value="Senior">Senior Level</option>
@@ -182,7 +156,7 @@ const CreateInterview = () => {
                 <Label htmlFor="techStack">Tech Stack</Label>
                 <Input
                   id="techStack"
-                  placeholder="e.g., React, Node.js, MongoDB"
+                  placeholder="e.g., React, Node.js, MongoDB, AWS, Docker"
                   {...register("techStack")}
                   className={errors.techStack ? "border-red-500" : ""}
                 />
@@ -214,7 +188,9 @@ const CreateInterview = () => {
                   <div key={field.id} className="question-item">
                     <div className="question-input-wrapper">
                       <Input
-                        placeholder={`Question ${index + 1}...`}
+                        placeholder={`Enter your interview question ${
+                          index + 1
+                        }...`}
                         {...register(`questions.${index}`)}
                         className={`question-input ${
                           errors.questions?.[index] ? "border-red-500" : ""
@@ -250,110 +226,78 @@ const CreateInterview = () => {
             <div className="rubric-section">
               <div className="rubric-header">
                 <Label>Interview Rubric</Label>
-                <div className="weight-summary">
-                  <span
-                    className={`weight-total ${
-                      totalPoints !== 100 ? "text-red-400" : "text-green-400"
-                    }`}
+                <div className="rubric-mode-toggle">
+                  <Button
+                    type="button"
+                    variant={rubricMode === "text" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setRubricMode("text")}
+                    className="mr-2"
                   >
-                    Total Points: {totalPoints}/100
-                  </span>
+                    <FileText className="w-4 h-4 mr-2" />
+                    Text Editor
+                  </Button>
+                  <Button
+                    type="button"
+                    variant={rubricMode === "pdf" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setRubricMode("pdf")}
+                  >
+                    <Upload className="w-4 h-4 mr-2" />
+                    Upload PDF
+                  </Button>
                 </div>
               </div>
 
-              <div className="rubric-actions">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={addRubricCriteria}
-                  className="add-rubric-btn"
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add Evaluation Criteria
-                </Button>
-              </div>
-
-              <div className="rubric-list">
-                {rubricFields.map((field, index) => (
-                  <div key={field.id} className="rubric-item">
-                    <div className="rubric-inputs">
-                      <div className="rubric-evaluation">
-                        <Input
-                          placeholder="Evaluation criteria (e.g., Communication Skills)"
-                          {...register(`rubric.${index}.evaluation`)}
-                          className={
-                            errors.rubric?.[index]?.evaluation
-                              ? "border-red-500"
-                              : ""
-                          }
-                        />
-                        {errors.rubric?.[index]?.evaluation && (
-                          <p className="text-red-400 text-sm mt-1">
-                            {errors.rubric[index]?.evaluation?.message}
-                          </p>
-                        )}
-                      </div>
-
-                      <div className="rubric-points">
-                        <Input
-                          type="number"
-                          min="0"
-                          max="100"
-                          placeholder="Points"
-                          {...register(`rubric.${index}.points`, {
-                            valueAsNumber: true,
-                          })}
-                          className={
-                            errors.rubric?.[index]?.points
-                              ? "border-red-500"
-                              : ""
-                          }
-                        />
-                        {errors.rubric?.[index]?.points && (
-                          <p className="text-red-400 text-sm mt-1">
-                            {errors.rubric[index]?.points?.message}
-                          </p>
-                        )}
-                      </div>
-
-                      {rubricFields.length > 1 && (
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => removeRubricField(index)}
-                          className="remove-rubric-btn"
-                        >
-                          <X className="w-4 h-4" />
-                        </Button>
-                      )}
-                    </div>
-
-                    <div className="rubric-description">
-                      <textarea
-                        placeholder="Description of this evaluation criteria..."
-                        {...register(`rubric.${index}.description`)}
-                        className={`criterion-description ${
-                          errors.rubric?.[index]?.description
-                            ? "border-red-500"
-                            : ""
-                        }`}
-                        rows={2}
-                      />
-                      {errors.rubric?.[index]?.description && (
-                        <p className="text-red-400 text-sm mt-1">
-                          {errors.rubric[index]?.description?.message}
-                        </p>
-                      )}
-                    </div>
+              {rubricMode === "text" ? (
+                <div className="text-editor-section">
+                  <textarea
+                    id="rubric-textarea"
+                    value={rubricText}
+                    onChange={(e) => setRubricText(e.target.value)}
+                    placeholder="Write your interview rubric here..."
+                    className="text-editor-textarea"
+                    rows={15}
+                  />
+                </div>
+              ) : (
+                <div className="pdf-upload-section">
+                  <div className="pdf-upload-area">
+                    <input
+                      type="file"
+                      accept=".pdf"
+                      onChange={handleFileChange}
+                      className="hidden"
+                      id="pdf-upload"
+                    />
+                    <label htmlFor="pdf-upload" className="pdf-upload-label">
+                      <Upload className="w-8 h-8 mb-4 text-light-100" />
+                      <p className="text-light-100 mb-2">
+                        {selectedFile
+                          ? selectedFile.name
+                          : "Click to upload PDF rubric"}
+                      </p>
+                      <p className="text-sm text-light-100/70">
+                        Upload your interview rubric as a PDF document
+                      </p>
+                    </label>
                   </div>
-                ))}
-              </div>
-              {errors.rubric && (
-                <p className="text-red-400 text-sm mt-2">
-                  {errors.rubric.message}
-                </p>
+                  {selectedFile && (
+                    <div className="selected-file">
+                      <FileText className="w-4 h-4 mr-2" />
+                      <span>{selectedFile.name}</span>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setSelectedFile(null)}
+                        className="ml-2"
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  )}
+                </div>
               )}
             </div>
 

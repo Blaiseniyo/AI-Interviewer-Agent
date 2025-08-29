@@ -20,7 +20,6 @@ const Layout = async ({ children }: { children: ReactNode }) => {
             height={36}
             style={{ width: "180px", height: "20px" }}
           />
-          {/* <h2 className="text-primary-100">Amalitech</h2> */}
         </Link>
       </nav>
 
