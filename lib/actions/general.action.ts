@@ -131,9 +131,152 @@ export async function getInterviewsByUserId(
     id: doc.id,
     ...doc.data(),
   })) as Interview[];
-  
+
   return interviewData.sort((a, b) => {
     // Sort by createdAt in descending order
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
   });
+}
+
+export async function getAllInterviews(): Promise<Interview[] | null> {
+  try {
+    const interviews = await db.collection("interviews").get();
+
+    const interviewData = interviews.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    })) as Interview[];
+
+    return interviewData.sort((a, b) => {
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    });
+  } catch (error) {
+    console.error("Error fetching all interviews:", error);
+    return null;
+  }
+}
+
+export async function getFilteredInterviews(
+  filters: AdminFilterParams
+): Promise<Interview[] | null> {
+  try {
+    const all = await getAllInterviews();
+    if (!all) return [];
+
+    const { role, type, dateFrom, dateTo } = filters;
+
+    const normalizedType = (value?: string) =>
+      value ? value.trim().toLowerCase() : "";
+
+    const fromMs = dateFrom
+      ? new Date(dateFrom).setHours(0, 0, 0, 0)
+      : undefined;
+    const toMs = dateTo
+      ? new Date(dateTo).setHours(23, 59, 59, 999)
+      : undefined;
+
+    const filtered = all.filter((interview: any) => {
+      // role contains
+      if (role && typeof interview.role === "string") {
+        if (!interview.role.toLowerCase().includes(role.toLowerCase()))
+          return false;
+      } else if (role && !interview.role) {
+        return false;
+      }
+
+      if (type && typeof interview.type === "string") {
+        const it = /mix/gi.test(interview.type)
+          ? "mixed"
+          : normalizedType(interview.type);
+        if (it !== normalizedType(type)) return false;
+      } else if (type && !interview.type) {
+        return false;
+      }
+
+      if (fromMs || toMs) {
+        const created = interview.createdAt
+          ? new Date(interview.createdAt).getTime()
+          : undefined;
+        if (!created) return false;
+        if (fromMs && created < fromMs) return false;
+        if (toMs && created > toMs) return false;
+      }
+
+      return true;
+    });
+
+    return filtered;
+  } catch (error) {
+    console.error("Error filtering interviews:", error);
+    return null;
+  }
+}
+
+export async function getInterviewWithFeedback(
+  interviewId: string
+): Promise<any> {
+  try {
+    const interview = await getInterviewById(interviewId);
+    if (!interview) return null;
+
+    const feedback = await getFeedbackByInterviewId({
+      interviewId,
+      userId: interview.userId,
+    });
+
+    return {
+      ...interview,
+      feedback,
+    };
+  } catch (error) {
+    console.error("Error fetching interview with feedback:", error);
+    return null;
+  }
+}
+
+export async function getCandidatesByInterviewId(
+  interviewId: string
+): Promise<any[]> {
+  try {
+    const feedbackSnapshot = await db
+      .collection("feedback")
+      .where("interviewId", "==", interviewId)
+      .get();
+
+    if (feedbackSnapshot.empty) return [];
+
+    const userIds = [
+      ...new Set(feedbackSnapshot.docs.map((doc) => doc.data().userId)),
+    ];
+
+    const candidates = await Promise.all(
+      userIds.map(async (userId) => {
+        const userDoc = await db.collection("users").doc(userId).get();
+        const userData = userDoc.data();
+
+        const userFeedback = feedbackSnapshot.docs.find(
+          (doc) => doc.data().userId === userId
+        );
+
+        return {
+          id: userId,
+          name: userData?.name || "Unknown",
+          email: userData?.email || "No email",
+          status: "completed",
+          score: userFeedback?.data()?.totalScore || 0,
+          completedAt: userFeedback?.data()?.createdAt || null,
+        };
+      })
+    );
+
+    return candidates.sort((a, b) => {
+      if (!a.completedAt || !b.completedAt) return 0;
+      return (
+        new Date(b.completedAt).getTime() - new Date(a.completedAt).getTime()
+      );
+    });
+  } catch (error) {
+    console.error("Error fetching candidates for interview:", error);
+    return [];
+  }
 }
