@@ -292,6 +292,449 @@
       @apply text-sm font-semibold capitalize;
     }
   }
+
+  /* Admin Dashboard Styles */
+  .admin-layout {
+    @apply min-h-screen dark-gradient;
+  }
+
+  .admin-container {
+    @apply max-w-7xl mx-auto px-6 py-8;
+  }
+
+  .admin-dashboard {
+    @apply space-y-8;
+  }
+
+  .admin-header {
+    @apply flex justify-between items-start mb-8;
+  }
+
+  .admin-title {
+    @apply text-4xl font-bold text-white mb-2;
+  }
+
+  .admin-subtitle {
+    @apply text-lg text-light-100;
+  }
+
+  .filters-section {
+    @apply bg-dark-200 rounded-2xl p-6 border border-light-600/20;
+  }
+
+  .filters-grid {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 items-end;
+  }
+
+  .filter-group {
+    @apply space-y-2;
+  }
+
+  .filter-group label {
+    @apply text-sm font-medium text-light-100;
+  }
+
+  .filter-select {
+    @apply w-full bg-dark-300 border border-light-600/30 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-200;
+  }
+
+  .filter-actions {
+    @apply flex items-end;
+  }
+
+  .clear-filters-btn {
+    @apply bg-transparent border-light-600/30 text-light-100 hover:bg-light-600/20;
+  }
+
+  .results-summary {
+    @apply text-light-100 text-sm;
+  }
+
+  .interviews-grid {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6;
+  }
+
+  .interview-card {
+    @apply bg-dark-200 rounded-2xl border border-light-600/20 overflow-hidden hover:border-primary-200/50 transition-all duration-300;
+  }
+
+  .card-header {
+    @apply relative p-6 pb-0;
+  }
+
+  .type-badge {
+    @apply absolute top-4 right-4 px-3 py-1 rounded-lg text-xs font-semibold text-white;
+  }
+
+  .company-logo {
+    @apply rounded-full object-cover size-[90px] mx-auto;
+  }
+
+  .card-content {
+    @apply p-6 pt-4 space-y-4;
+  }
+
+  .interview-title {
+    @apply text-xl font-semibold text-white capitalize;
+  }
+
+  .interview-meta {
+    @apply flex gap-4 text-sm text-light-100;
+  }
+
+  .meta-item {
+    @apply flex items-center gap-2;
+  }
+
+  .score {
+    @apply font-semibold;
+  }
+
+  .candidate-info {
+    @apply flex gap-2 text-sm;
+  }
+
+  .candidate-label {
+    @apply text-light-100;
+  }
+
+  .candidate-name {
+    @apply text-white font-medium;
+  }
+
+  .assessment-text {
+    @apply text-sm text-light-100 line-clamp-3 leading-relaxed;
+  }
+
+  .card-footer {
+    @apply p-6 pt-0 flex justify-between items-center;
+  }
+
+  .tech-icons {
+    @apply flex gap-2;
+  }
+
+  .view-btn {
+    @apply bg-primary-200 text-dark-100 hover:bg-primary-200/80 px-4 py-2 rounded-lg font-medium;
+  }
+
+  .no-results {
+    @apply text-center py-12 space-y-4;
+  }
+
+  .no-results p {
+    @apply text-light-100 text-lg;
+  }
+
+  /* Interview Detail Page Styles */
+  .interview-detail-header {
+    @apply mb-8 space-y-4;
+  }
+
+  .back-btn {
+    @apply text-light-100 hover:text-white hover:bg-dark-300;
+  }
+
+  .header-content {
+    @apply flex justify-between items-start;
+  }
+
+  .detail-title {
+    @apply text-3xl font-bold text-white mb-1;
+  }
+
+  .detail-subtitle {
+    @apply text-lg text-light-100;
+  }
+
+  .company-logo-small {
+    @apply rounded-full object-cover;
+  }
+
+  .header-meta {
+    @apply flex gap-6 text-light-100;
+  }
+
+  .detail-grid {
+    @apply grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8;
+  }
+
+  .detail-card {
+    @apply bg-dark-200 rounded-2xl p-6 border border-light-600/20;
+  }
+
+  .detail-card.full-width {
+    @apply lg:col-span-2;
+  }
+
+  .card-title {
+    @apply text-xl font-semibold text-white mb-4;
+  }
+
+  .candidate-details {
+    @apply space-y-3;
+  }
+
+  .detail-row {
+    @apply flex items-center gap-3 text-sm;
+  }
+
+  .detail-row .label {
+    @apply text-light-100 font-medium min-w-[120px];
+  }
+
+  .detail-row .value {
+    @apply text-white;
+  }
+
+  .status-completed {
+    @apply text-green-400 font-medium;
+  }
+
+  .assessment-content {
+    @apply space-y-4;
+  }
+
+  .overall-score {
+    @apply flex justify-center;
+  }
+
+  .score-circle {
+    @apply flex flex-col items-center justify-center w-24 h-24 rounded-full border-4 border-primary-200;
+  }
+
+  .score-number {
+    @apply text-2xl font-bold;
+  }
+
+  .score-label {
+    @apply text-sm text-light-100;
+  }
+
+  .category-scores {
+    @apply space-y-4;
+  }
+
+  .category-item {
+    @apply space-y-2;
+  }
+
+  .category-header {
+    @apply flex justify-between items-center;
+  }
+
+  .category-name {
+    @apply text-white font-medium;
+  }
+
+  .category-score {
+    @apply font-semibold;
+  }
+
+  .score-bar {
+    @apply w-full h-2 bg-dark-300 rounded-full overflow-hidden;
+  }
+
+  .score-fill {
+    @apply h-full rounded-full transition-all duration-300;
+  }
+
+  .strengths-list,
+  .improvement-list {
+    @apply space-y-2;
+  }
+
+  .strength-item,
+  .improvement-item {
+    @apply flex items-start gap-2 text-sm text-light-100;
+  }
+
+  .strength-bullet {
+    @apply text-green-400 font-bold mt-0.5;
+  }
+
+  .improvement-bullet {
+    @apply text-red-400 font-bold mt-0.5;
+  }
+
+  .transcript-container {
+    @apply space-y-4 max-h-96 overflow-y-auto;
+  }
+
+  .transcript-message {
+    @apply p-4 rounded-lg;
+  }
+
+  .transcript-message.interviewer {
+    @apply bg-primary-200/10 border border-primary-200/20;
+  }
+
+  .transcript-message.candidate {
+    @apply bg-dark-300 border border-light-600/30;
+  }
+
+  .message-header {
+    @apply mb-2;
+  }
+
+  .speaker {
+    @apply text-sm font-semibold text-primary-200;
+  }
+
+  .message-content {
+    @apply text-sm text-light-100 leading-relaxed;
+  }
+
+  .detail-actions {
+    @apply flex gap-4 justify-center;
+  }
+
+  /* Create Interview Page Styles */
+  .create-interview-header {
+    @apply mb-8 space-y-4;
+  }
+
+  .create-title {
+    @apply text-3xl font-bold text-white mb-2;
+  }
+
+  .create-subtitle {
+    @apply text-lg text-light-100;
+  }
+
+  .create-form-container {
+    @apply max-w-5xl mx-auto;
+  }
+
+  .create-form {
+    @apply bg-dark-200 rounded-2xl p-8 border border-light-600/20;
+  }
+
+  .form-grid {
+    @apply grid grid-cols-1 md:grid-cols-2 gap-6 mb-8;
+  }
+
+  .form-group {
+    @apply space-y-2;
+  }
+
+  .form-group.full-width {
+    @apply md:col-span-2;
+  }
+
+  .form-group label {
+    @apply text-sm font-medium text-light-100;
+  }
+
+  .form-select {
+    @apply w-full bg-dark-300 border border-light-600/30 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-200;
+  }
+
+  .form-textarea {
+    @apply w-full bg-dark-300 border border-light-600/30 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-200 resize-none;
+  }
+
+  .form-actions {
+    @apply flex gap-4 justify-end;
+  }
+
+  /* Questions Section Styles */
+  .questions-section {
+    @apply mb-8;
+  }
+
+  .questions-header {
+    @apply flex justify-between items-center mb-4;
+  }
+
+  .questions-header label {
+    @apply text-sm font-medium text-light-100;
+  }
+
+  .add-question-btn {
+    @apply bg-transparent border-light-600/30 text-light-100 hover:bg-light-600/20;
+  }
+
+  .questions-list {
+    @apply space-y-3;
+  }
+
+  .question-item {
+    @apply animate-fadeIn;
+  }
+
+  .question-input-wrapper {
+    @apply flex gap-2 items-center;
+  }
+
+  .question-input {
+    @apply flex-1;
+  }
+
+  .remove-question-btn {
+    @apply text-light-100 hover:text-red-400 hover:bg-red-400/10;
+  }
+
+  /* Rubric Section Styles */
+  .rubric-section {
+    @apply mb-8;
+  }
+
+  .rubric-header {
+    @apply flex justify-between items-center mb-4;
+  }
+
+  .rubric-header label {
+    @apply text-sm font-medium text-light-100;
+  }
+
+  .weight-summary {
+    @apply flex items-center;
+  }
+
+  .weight-total {
+    @apply text-sm font-medium;
+  }
+
+  .rubric-actions {
+    @apply mb-4;
+  }
+
+  .add-rubric-btn {
+    @apply bg-transparent border-light-600/30 text-light-100 hover:bg-light-600/20;
+  }
+
+  .rubric-list {
+    @apply space-y-4;
+  }
+
+  .rubric-item {
+    @apply bg-dark-300 rounded-lg p-4 border border-light-600/20 animate-fadeIn;
+  }
+
+  .rubric-inputs {
+    @apply flex gap-3 items-start mb-3;
+  }
+
+  .rubric-evaluation {
+    @apply flex-1;
+  }
+
+  .rubric-points {
+    @apply w-24;
+  }
+
+  .remove-rubric-btn {
+    @apply text-light-100 hover:text-red-400 hover:bg-red-400/10;
+  }
+
+  .rubric-description {
+    @apply w-full;
+  }
+
+  .criterion-description {
+    @apply w-full bg-dark-200 border border-light-600/30 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary-200 resize-none;
+  }
 }
 
 @utility dark-gradient {
