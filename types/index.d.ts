@@ -45,6 +45,8 @@ interface InterviewCardProps {
   type: string;
   techstack: string[];
   createdAt?: string;
+  showCandidate?: boolean;
+  isAdmin?: boolean;
 }
 
 interface AgentProps {
@@ -97,3 +99,11 @@ interface InterviewFormProps {
 interface TechIconProps {
   techStack: string[];
 }
+
+type AdminFilterParams = {
+  candidate?: string;
+  role?: string;
+  type?: string;
+  dateFrom?: string;
+  dateTo?: string;
+};
