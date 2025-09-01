@@ -70,3 +70,10 @@ export const getScoreColor = (score: number) => {
   if (score >= 60) return "text-yellow-400";
   return "text-red-400";
 };
+
+export  const getScoreLabel = (score: number) => {
+    if (score >= 80) return "Excellent";
+    if (score >= 60) return "Good";
+    if (score >= 40) return "Fair";
+    return "Poor";
+  };

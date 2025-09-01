@@ -33,7 +33,6 @@ async function InterviewPage({ params }: InterviewPageProps) {
           >
             <Link href="/admin/interviews">
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Interviews
             </Link>
           </Button>
           <div>

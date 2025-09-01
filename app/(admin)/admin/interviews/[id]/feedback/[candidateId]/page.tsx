@@ -5,7 +5,7 @@ import { getInterviewById } from "@/lib/actions/general.action";
 import { getFeedbackByInterviewId } from "@/lib/actions/general.action";
 import { getUserById } from "@/lib/actions/auth.action";
 import { notFound } from "next/navigation";
-import { formatDate, getScoreColor } from "@/lib/utils";
+import { formatDate, getScoreColor, getScoreLabel } from "@/lib/utils";
 
 type FeedbackPageProps = {
   params: {
@@ -26,14 +26,6 @@ async function FeedbackPage({ params }: FeedbackPageProps) {
     notFound();
   }
 
-
-  const getScoreLabel = (score: number) => {
-    if (score >= 80) return "Excellent";
-    if (score >= 60) return "Good";
-    if (score >= 40) return "Fair";
-    return "Poor";
-  };
-
   return (
     <div className="w-full">
       <div className="flex justify-between items-start p-8 pb-6">
@@ -45,7 +37,6 @@ async function FeedbackPage({ params }: FeedbackPageProps) {
           >
             <Link href={`/admin/interviews/${params.id}`}>
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Interview
             </Link>
           </Button>
           <div>

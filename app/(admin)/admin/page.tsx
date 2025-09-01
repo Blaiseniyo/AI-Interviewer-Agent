@@ -5,15 +5,16 @@ import { getAllInterviews } from "@/lib/actions/general.action";
 import Image from "next/image";
 import { formatDate } from "@/lib/utils";
 
-
 const AdminDashboard = async () => {
-    const interviews = await getAllInterviews();
+  const interviews = await getAllInterviews();
 
   return (
     <div className="w-full">
       <div className="flex justify-between items-start p-8 pb-6">
         <div>
-          <h1 className="text-2xl font-bold text-white mb-1">Welcome back, Admin!</h1>
+          <h1 className="text-2xl font-bold text-white mb-1">
+            Welcome back, Admin!
+          </h1>
           <p className="text-light-100">AI-Driven Interviews</p>
         </div>
         <div className="flex items-center gap-4">
