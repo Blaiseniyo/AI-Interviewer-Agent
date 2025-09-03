@@ -42,14 +42,14 @@ const Sidebar = () => {
         <ul className="space-y-4 list-none">
           {navigationItems.map((item) => {
             const Icon = item.icon;
-            const isActive = pathname === item.href
+            const isActive = pathname === item.href;
             return (
               <li key={item.name}>
                 <Link
                   href={item.href}
-                  className={`relative flex cur items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  className={`relative flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                     isActive
-                      ? "bg-dark-300/80 text-white ring-2 ring-secondary-100/60"
+                      ? "bg-dark-300 text-white border-2 border-secondary-100/40"
                       : "text-light-100 hover:text-white hover:bg-dark-300"
                   }`}
                 >
