@@ -41,8 +41,9 @@ export async function signUp(params: SignUpParams) {
     await db.collection("users").doc(uid).set({
       name,
       email,
-      // profileURL,
-      // resumeURL,
+      role: UserRole.USER,
+      profileURL: "",
+      // resumeURL: "",
     });
 
     return {
@@ -96,6 +97,15 @@ export async function signOut() {
   cookieStore.delete("session");
 }
 
+export async function getUserSession(): Promise<string | null> {
+  const cookieStore = await cookies();
+
+  const sessionCookie = cookieStore.get("session")?.value;
+  if (!sessionCookie) return null;
+
+  return sessionCookie;
+}
+
 // Get current user from session cookie
 export async function getCurrentUser(): Promise<User | null> {
   const cookieStore = await cookies();
@@ -125,8 +135,45 @@ export async function getCurrentUser(): Promise<User | null> {
   }
 }
 
+export async function verificationUserSession(session: string): Promise<User | null> {
+
+  if (!session) return null;
+
+  try {
+    const decodedClaims = await auth.verifySessionCookie(session, true);
+    // get user info from db
+    const userRecord = await db
+      .collection("users")
+      .doc(decodedClaims.uid)
+      .get();
+
+    if (!userRecord.exists) return null;
+
+    return { ...userRecord.data(), id: userRecord.id } as User;
+  } catch (error) {
+    console.error("Error verifying user session:", error);
+    return null;
+  }
+}
+
 // Check if user is authenticated
 export async function isAuthenticated() {
   const user = await getCurrentUser();
   return !!user;
+}
+
+export async function getUserByEmail(email: string): Promise<User | null> {
+  try {
+    const userRecord = await db.collection("users").where("email", "==", email).get();
+    if (userRecord.empty) return null;
+
+    const userData = userRecord.docs[0].data();
+    return {
+      ...userData,
+      id: userRecord.docs[0].id,
+    } as User;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
 }
