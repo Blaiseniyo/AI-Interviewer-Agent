@@ -10,8 +10,12 @@ const monaSans = Mona_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "PrepWise",
+  title: "Amalitech",
   description: "An AI-powered platform for preparing for mock interviews",
+  icons: {
+    icon: "/amali-logo.png",
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export default function RootLayout({

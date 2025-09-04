@@ -87,11 +87,14 @@ const AdminDashboard = async () => {
                     Copy Link
                   </Button>
                   <Button
+                    asChild
                     size="sm"
                     className="flex-1 bg-primary-200 hover:bg-primary-200/80 text-dark-100"
                   >
-                    <Send className="w-4 h-4 mr-2" />
-                    Send
+                    <Link href={`/admin/interviews/${interview.id}`}>
+                      <Send className="w-4 h-4 mr-2" />
+                      View
+                    </Link>
                   </Button>
                 </div>
               </div>
