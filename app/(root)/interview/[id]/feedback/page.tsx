@@ -9,6 +9,7 @@ import {
 } from "@/lib/actions/general.action";
 import { Button } from "@/components/ui/button";
 import { getCurrentUser } from "@/lib/actions/auth.action";
+import InterviewTranscript from "@/components/InterviewTranscription";
 
 const Feedback = async ({ params }: RouteParams) => {
   const { id } = await params;
@@ -92,7 +93,14 @@ const Feedback = async ({ params }: RouteParams) => {
         </ul>
       </div>
 
-      <div className="buttons">
+      {/* Interview Conversation History - Enhanced with collapsible UI */}
+      <div className="mt-10 mb-6">
+        <h2 className="text-2xl font-medium mb-2">Interview Transcript</h2>
+        <p className="mb-4 text-light-400">Review the full conversation between you and the AI interviewer</p>
+        <InterviewTranscript interviewId={id} userId={user?.id!} compact={true} />
+      </div>
+
+      <div className="buttons mt-8">
         <Button className="btn-secondary flex-1">
           <Link href="/" className="flex w-full justify-center">
             <p className="text-sm font-semibold text-primary-200 text-center">
