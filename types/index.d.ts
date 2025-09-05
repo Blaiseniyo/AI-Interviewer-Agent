@@ -20,9 +20,13 @@ interface Interview {
   questions: string[];
   techstack: string[];
   createdAt: string;
-  userId: string;
+  userId?: string;
+  createdBy?: string;
   type: string;
-  finalized: boolean;
+  finalized?: boolean;
+  isAdminCreated?: boolean;
+  rubric?: string;
+  coverImage?: string;
 }
 
 interface CreateFeedbackParams {
@@ -32,10 +36,35 @@ interface CreateFeedbackParams {
   feedbackId?: string;
 }
 
+interface ChatMessage {
+  id: string;
+  interviewId: string;
+  senderId: string;
+  senderType: 'user' | 'assistant';
+  content: string;
+  timestamp: string;
+}
+
+interface Invitation {
+  id: string;
+  interviewId: string;
+  senderId: string;
+  senderName: string;
+  recipientId: string;
+  message?: string;
+  status: 'pending' | 'accepted' | 'completed';
+  createdAt: string;
+  invitationToken: string;
+  acceptedAt?: string;
+  completedAt?: string;
+}
+
 interface User {
   name: string;
   email: string;
   id: string;
+  role: UserRole;
+  profileURL?: string;
 }
 
 interface InterviewCardProps {
@@ -69,7 +98,7 @@ interface GetFeedbackByInterviewIdParams {
 }
 
 interface GetLatestInterviewsParams {
-  userId: string;
+  userId?: string;
   limit?: number;
 }
 
@@ -100,10 +129,16 @@ interface TechIconProps {
   techStack: string[];
 }
 
-type AdminFilterParams = {
-  candidate?: string;
-  role?: string;
-  type?: string;
-  dateFrom?: string;
-  dateTo?: string;
-};
+enum UserRole {
+  USER = "user",
+  ADMIN = "admin",
+}
+
+interface SendInvitationEmailParams {
+  recipientEmail: string;
+  senderName: string;
+  receiverName: string;
+  invitationLink: string;
+  interviewRole: string;
+  interviewLevel: string;
+}
