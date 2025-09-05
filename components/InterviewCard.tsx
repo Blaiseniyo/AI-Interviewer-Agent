@@ -6,6 +6,7 @@ import { Button } from "./ui/button";
 import DisplayTechIcons from "./DisplayTechIcons";
 
 import { cn, getRandomInterviewCover } from "@/lib/utils";
+import { getUserById } from "@/lib/actions/auth.action";
 import { getFeedbackByInterviewId } from "@/lib/actions/general.action";
 
 const InterviewCard = async ({
@@ -15,6 +16,8 @@ const InterviewCard = async ({
   type,
   techstack,
   createdAt,
+  showCandidate,
+  isAdmin = false,
 }: InterviewCardProps) => {
   const feedback =
     userId && interviewId
@@ -23,6 +26,9 @@ const InterviewCard = async ({
           userId,
         })
       : null;
+
+  const candidateName =
+    showCandidate && userId ? (await getUserById(userId))?.name : undefined;
 
   const normalizedType = /mix/gi.test(type) ? "Mixed" : type;
 
@@ -63,6 +69,13 @@ const InterviewCard = async ({
           {/* Interview Role */}
           <h3 className="mt-5 capitalize">{role} Interview</h3>
 
+          {showCandidate && (
+            <p className="mt-1 text-light-200">
+              Candidate:{" "}
+              <span className="font-medium">{candidateName || "Unknown"}</span>
+            </p>
+          )}
+
           {/* Date & Score */}
           <div className="flex flex-row gap-5 mt-3">
             <div className="flex flex-row gap-2">
@@ -94,12 +107,18 @@ const InterviewCard = async ({
           <Button className="btn-primary">
             <Link
               href={
-                feedback
+                isAdmin
+                  ? `/admin/interviews/${interviewId}`
+                  : feedback
                   ? `/interview/${interviewId}/feedback`
                   : `/interview/${interviewId}`
               }
             >
-              {feedback ? "Check Feedback" : "View Interview"}
+              {isAdmin
+                ? "View Details"
+                : feedback
+                ? "Check Feedback"
+                : "View Interview"}
             </Link>
           </Button>
         </div>

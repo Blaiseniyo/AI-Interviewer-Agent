@@ -74,6 +74,8 @@ interface InterviewCardProps {
   type: string;
   techstack: string[];
   createdAt?: string;
+  showCandidate?: boolean;
+  isAdmin?: boolean;
 }
 
 interface AgentProps {
