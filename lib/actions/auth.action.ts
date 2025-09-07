@@ -135,8 +135,20 @@ export async function getCurrentUser(): Promise<User | null> {
   }
 }
 
-export async function verificationUserSession(session: string): Promise<User | null> {
 
+// Get user by id (for admin views and lookups)
+export async function getUserById(userId: string): Promise<User | null> {
+  try {
+    const userDoc = await db.collection("users").doc(userId).get();
+    if (!userDoc.exists) return null;
+    return { id: userDoc.id, ...(userDoc.data() as Omit<User, "id">) } as User;
+  } catch (error) {
+    console.error("Error fetching user by id:", error);
+
+  }
+}
+
+export async function verificationUserSession(session: string): Promise<User | null> {
   if (!session) return null;
 
   try {
@@ -155,7 +167,6 @@ export async function verificationUserSession(session: string): Promise<User | n
     return null;
   }
 }
-
 // Check if user is authenticated
 export async function isAuthenticated() {
   const user = await getCurrentUser();
