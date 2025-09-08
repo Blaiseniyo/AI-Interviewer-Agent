@@ -5,23 +5,25 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, Plus, X, Upload, FileText } from "lucide-react";
+import { ArrowLeft, Plus, X, Upload, FileText, Loader2 } from "lucide-react";
 
-import { interviewFormSchema } from "@/types/validations";
+import { EXPERIENCE_LEVELS, INTERVIEW_TYPES, interviewFormSchema } from "@/types/validations";
+import FormField from "@/components/FormFieldInput";
+import SelectField from "@/components/SelectField";
+import { RubricMode, InterviewFormData, MAX_FILE_SIZE } from "@/types/validations";
 
-type InterviewFormData = z.infer<typeof interviewFormSchema>;
 
 const CreateInterview = () => {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [rubricMode, setRubricMode] = useState<"text" | "pdf">("text");
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [rubricMode, setRubricMode] = useState<RubricMode>("text");
   const [rubricText, setRubricText] = useState("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const {
     register,
@@ -43,7 +45,7 @@ const CreateInterview = () => {
     fields: questionFields,
     append: appendQuestion,
     remove: removeQuestion,
-  } = useFieldArray({
+  } = useFieldArray<InterviewFormData>({
     control,
     name: "questions",
   });
@@ -58,34 +60,92 @@ const CreateInterview = () => {
     }
   };
 
+  const validateFile = (file: File): string | null => {
+    const allowedTypes = ['application/pdf'];
+    if (!allowedTypes.includes(file.type)) {
+      return "Please select a valid PDF file";
+    }
+    if (file.size > MAX_FILE_SIZE) {
+      return "File size must be less than 10MB";
+    }
+    return null;
+  };
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file && file.type === "application/pdf") {
-      setSelectedFile(file);
-      console.log("PDF file selected:", file.name);
+    if (!file) return;
+
+    const error = validateFile(file);
+    if (error) {
+      toast.error(error);
+      return;
+    }
+
+    setSelectedFile(file);
+    toast.success(`File "${file.name}" selected successfully`);
+  };
+
+  const handleRubricModeChange = (mode: RubricMode) => {
+    setRubricMode(mode);
+    if (mode === "text") {
+      setSelectedFile(null);
     } else {
-      alert("Please select a valid PDF file");
+      setRubricText("");
     }
   };
 
   const onSubmit = async (data: InterviewFormData) => {
+    if (rubricMode === "text" && !rubricText.trim()) {
+      toast.error("Please provide interview rubric content");
+      return;
+    }
+
+    if (rubricMode === "pdf" && !selectedFile) {
+      toast.error("Please upload a PDF rubric file");
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
       const filteredQuestions = data.questions.filter((q) => q.trim() !== "");
 
-      const interviewData = {
-        ...data,
-        questions: filteredQuestions,
-        rubricMode,
-        rubricText: rubricMode === "text" ? rubricText : null,
-        selectedFile: selectedFile?.name,
+      if (filteredQuestions.length === 0) {
+        toast.error("Please add at least one interview question");
+        setIsSubmitting(false);
+        return;
+      }
+
+      const interviewPayload = {
+        type: data.type,
+        role: data.role,
+        level: data.level,
+        questions: JSON.stringify(filteredQuestions),
+        rubric: rubricMode === "text" ? rubricText : selectedFile?.name || "",
+        techStack: data.techStack,
       };
 
-      console.log("Creating interview:", interviewData);
+      const response = await fetch("/api/admin/interview", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(interviewPayload),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        throw new Error(result.error || "Failed to create interview");
+      }
+
+      toast.success("Interview created successfully!");
       router.push("/admin");
     } catch (error) {
       console.error("Error creating interview:", error);
+      toast.error(
+        error instanceof Error ? error.message : "Failed to create interview"
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -113,59 +173,39 @@ const CreateInterview = () => {
         <div className="create-form-container">
           <form onSubmit={handleSubmit(onSubmit)} className="create-form">
             <div className="form-grid">
-              <div className="form-group">
-                <Label htmlFor="role">Interview Role</Label>
-                <Input
-                  id="role"
-                  placeholder="e.g., Frontend Developer, Backend Engineer, Product Manager"
-                  {...register("role")}
-                  className={errors.role ? "border-red-500" : ""}
-                />
-                {errors.role && (
-                  <p className="text-red-400 text-sm mt-1">
-                    {errors.role.message}
-                  </p>
-                )}
-              </div>
+              <FormField
+                name="role"
+                label="Interview Role"
+                placeholder="e.g., Frontend Developer, Backend Engineer, Product Manager"
+                register={register}
+                error={errors.role}
+              />
 
-              <div className="form-group">
-                <Label htmlFor="type">Interview Type</Label>
-                <select id="type" className="form-select" {...register("type")}>
-                  <option value="">Select interview type</option>
-                  <option value="Technical">Technical</option>
-                  <option value="Non-Technical">Non-Technical</option>
-                  <option value="Mixed">Mixed</option>
-                </select>
-              </div>
+              <SelectField
+                name="type"
+                label="Interview Type"
+                placeholder="Select interview type"
+                options={INTERVIEW_TYPES}
+                register={register}
+                error={errors.type}
+              />
 
-              <div className="form-group">
-                <Label htmlFor="level">Experience Level</Label>
-                <select
-                  id="level"
-                  className="form-select"
-                  {...register("level")}
-                >
-                  <option value="">Select experience level</option>
-                  <option value="Entry">Entry Level</option>
-                  <option value="Mid">Mid Level</option>
-                  <option value="Senior">Senior Level</option>
-                </select>
-              </div>
+              <SelectField
+                name="level"
+                label="Experience Level"
+                placeholder="Select experience level"
+                options={EXPERIENCE_LEVELS}
+                register={register}
+                error={errors.level}
+              />
 
-              <div className="form-group">
-                <Label htmlFor="techStack">Tech Stack</Label>
-                <Input
-                  id="techStack"
-                  placeholder="e.g., React, Node.js, MongoDB, AWS, Docker"
-                  {...register("techStack")}
-                  className={errors.techStack ? "border-red-500" : ""}
-                />
-                {errors.techStack && (
-                  <p className="text-red-400 text-sm mt-1">
-                    {errors.techStack.message}
-                  </p>
-                )}
-              </div>
+              <FormField
+                name="techStack"
+                label="Tech Stack"
+                placeholder="e.g., React, Node.js, MongoDB, AWS, Docker"
+                register={register}
+                error={errors.techStack}
+              />
             </div>
 
             <div className="questions-section">
@@ -229,7 +269,7 @@ const CreateInterview = () => {
                     type="button"
                     variant={rubricMode === "text" ? "default" : "outline"}
                     size="sm"
-                    onClick={() => setRubricMode("text")}
+                    onClick={() => handleRubricModeChange("text")}
                     className="mr-2"
                   >
                     <FileText className="w-4 h-4 mr-2" />
@@ -239,7 +279,7 @@ const CreateInterview = () => {
                     type="button"
                     variant={rubricMode === "pdf" ? "default" : "outline"}
                     size="sm"
-                    onClick={() => setRubricMode("pdf")}
+                    onClick={() => handleRubricModeChange("pdf")}
                   >
                     <Upload className="w-4 h-4 mr-2" />
                     Upload PDF
@@ -308,7 +348,14 @@ const CreateInterview = () => {
                 className="btn-primary"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Creating..." : "Create Interview"}
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Creating...
+                  </>
+                ) : (
+                  "Create Interview"
+                )}
               </Button>
             </div>
           </form>
