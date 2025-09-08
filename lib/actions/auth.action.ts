@@ -2,6 +2,7 @@
 
 import { auth, db } from "@/firebase/admin";
 import { cookies } from "next/headers";
+import { SignInParams, SignUpParams, User, UserRole } from "@/types";
 
 // Session duration (1 week)
 const SESSION_DURATION = 60 * 60 * 24 * 7;
@@ -135,6 +136,14 @@ export async function getCurrentUser(): Promise<User | null> {
   }
 }
 
+// Get redirect path based on user role
+export async function getRedirectPath(): Promise<string> {
+  const user = await getCurrentUser();
+  if (!user) return "/sign-in";
+
+  return user.role === UserRole.ADMIN ? "/admin" : "/";
+}
+
 
 // Get user by id (for admin views and lookups)
 export async function getUserById(userId: string): Promise<User | null> {
@@ -187,4 +196,13 @@ export async function getUserByEmail(email: string): Promise<User | null> {
     console.log(error);
     return null;
   }
+}
+
+export async function isAdmin(): Promise<boolean> {
+  const user = await getCurrentUser();
+  return user?.role === UserRole.ADMIN;
+}
+
+export async function getCurrentUserWithRole() {
+  return await getCurrentUser();
 }

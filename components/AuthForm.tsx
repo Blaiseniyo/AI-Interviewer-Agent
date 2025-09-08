@@ -17,7 +17,8 @@ import {
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 
-import { signIn, signUp } from "@/lib/actions/auth.action";
+import { signIn, signUp, getRedirectPath } from "@/lib/actions/auth.action";
+import { FormType } from "@/types";
 import FormField from "./FormField";
 
 const authFormSchema = (type: FormType) => {
@@ -87,7 +88,9 @@ const AuthForm = ({ type }: { type: FormType }) => {
         });
 
         toast.success("Signed in successfully.");
-        router.push("/");
+
+        const redirectPath = await getRedirectPath();
+        router.push(redirectPath);
       }
     } catch (error) {
       console.log(error);
@@ -101,7 +104,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
     <div className="card-border lg:min-w-[566px]">
       <div className="flex flex-col items-center gap-6 card py-14 px-10">
         <div className="flex flex-row gap-2 justify-center">
-          <Image src="/Logo-AmaliTech.svg" alt="logo" height={36} width={34} style={{width: '160px'}} />
+          <Image src="/Logo-AmaliTech.svg" alt="logo" height={36} width={34} style={{ width: '160px' }} />
         </div>
         <h3>Practice job interviews with AI</h3>
 

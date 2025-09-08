@@ -188,13 +188,11 @@ const CreateInterview = () => {
                   <div key={field.id} className="question-item">
                     <div className="question-input-wrapper">
                       <Input
-                        placeholder={`Enter your interview question ${
-                          index + 1
-                        }...`}
+                        placeholder={`Enter your interview question ${index + 1
+                          }...`}
                         {...register(`questions.${index}`)}
-                        className={`question-input ${
-                          errors.questions?.[index] ? "border-red-500" : ""
-                        }`}
+                        className={`question-input ${errors.questions?.[index] ? "border-red-500" : ""
+                          }`}
                       />
                       {questionFields.length > 1 && (
                         <Button
