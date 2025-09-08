@@ -142,3 +142,18 @@ export interface SendInvitationEmailParams {
   interviewRole: string;
   interviewLevel: string;
 }
+
+export interface Candidate {
+  id: string;
+  name: string;
+  email: string;
+  status: string;
+  score: number;
+  completedAt: string | null;
+}
+
+export interface InterviewDetailsProps {
+  candidates: Candidate[];
+  interviewId: string;
+  interviewRole: string;
+}

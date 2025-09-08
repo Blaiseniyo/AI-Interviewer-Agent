@@ -1,17 +1,15 @@
 import { db } from "@/firebase/admin";
-import { getUserByEmail, verificationUserSession } from "@/lib/actions/auth.action";
+import { getUserByEmail, getCurrentUser } from "@/lib/actions/auth.action";
 import { getInterviewById } from "@/lib/actions/general.action";
 import { emailService } from "@/lib/services/emailService";
 import { checkEmailConfig } from "@/lib/services/emailConfig";
 import { invitationEmailTemplate } from "@/lib/templates/emailTemplates";
+import { SendInvitationEmailParams } from "@/types";
 
 export async function POST(request: Request) {
     try {
-        // Get bearer token from request
-        const authHeader = request.headers.get("Authorization");
-        const token = authHeader?.split(" ")[1] as string;
-
-        const user = await verificationUserSession(token);
+        // Get current user from session cookie
+        const user = await getCurrentUser();
 
         if (!user) {
             return Response.json({
@@ -20,7 +18,7 @@ export async function POST(request: Request) {
             }, { status: 401 });
         }
 
-        if (!user || user.role !== "admin") {
+        if (user.role !== "admin") {
             return Response.json({
                 success: false,
                 error: "Unauthorized. Admin access required."
@@ -37,13 +35,14 @@ export async function POST(request: Request) {
             }, { status: 400 });
         }
 
+        // Try to find existing user by email, but don't require it
         const recipientUser = await getUserByEmail(recipientEmail);
-        if (!recipientUser) {
-            return Response.json({
-                success: false,
-                error: "Recipient user not found"
-            }, { status: 404 });
-        }
+
+        // If user doesn't exist, we'll create an invitation for them to sign up
+        const recipientId = recipientUser?.id || null;
+
+        // Generate a display name from email if user doesn't exist
+        const recipientName = recipientUser?.name || recipientEmail.split('@')[0];
 
         // Check if interview exists
         const interviewRef = db.collection("interviews").doc(interviewId);
@@ -61,8 +60,10 @@ export async function POST(request: Request) {
             interviewId,
             senderName: user.name,
             senderId: user.id,
-            recipientUser,
-            status: "sent",
+            recipientId: recipientId,
+            recipientEmail: recipientEmail,
+            recipientName: recipientName,
+            status: "pending",
             createdAt: new Date().toISOString(),
             invitationToken: generateInvitationToken(),
         };
@@ -87,10 +88,10 @@ export async function POST(request: Request) {
                 emailSent = await sendInvitationEmail({
                     recipientEmail,
                     senderName: user.name,
-                    receiverName: recipientUser.name,
+                    receiverName: recipientName,
                     invitationLink,
-                    interviewRole: interview?.role || "technical",
-                    interviewLevel: interview?.level || "intermediate",
+                    interviewRole: interview?.role || "Interview",
+                    interviewLevel: interview?.level || "Entry",
                 });
 
                 emailStatus = emailSent

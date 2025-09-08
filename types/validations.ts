@@ -28,3 +28,8 @@ export const EXPERIENCE_LEVELS = [
 
 export const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
+export const candidateInviteFormSchema = z.object({
+  email: z.string().email("Please enter a valid email address"),
+})
+
+export type CandidateInviteFormData = z.infer<typeof candidateInviteFormSchema>

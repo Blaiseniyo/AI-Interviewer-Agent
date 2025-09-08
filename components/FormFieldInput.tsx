@@ -1,18 +1,21 @@
-import { FieldError, UseFormRegister } from "react-hook-form";
+import { FieldError, UseFormRegister, FieldValues, Path } from "react-hook-form";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 
-interface FormFieldProps {
-    name: string;
+interface FormFieldProps<T extends FieldValues = FieldValues> {
+    name: Path<T>;
     label: string;
     placeholder?: string;
     type?: "text" | "email" | "password";
-    register: UseFormRegister<any>;
+    register: UseFormRegister<T>;
     error?: FieldError;
     required?: boolean;
+    disabled?: boolean;
+    autoFocus?: boolean;
+    className?: string;
 }
 
-const FormField = ({
+const FormField = <T extends FieldValues = FieldValues>({
     name,
     label,
     placeholder,
@@ -20,7 +23,10 @@ const FormField = ({
     register,
     error,
     required = false,
-}: FormFieldProps) => {
+    disabled = false,
+    autoFocus = false,
+    className = "",
+}: FormFieldProps<T>) => {
     return (
         <div className="form-group">
             <Label htmlFor={name}>
@@ -32,7 +38,9 @@ const FormField = ({
                 type={type}
                 placeholder={placeholder}
                 {...register(name)}
-                className={error ? "border-red-500" : ""}
+                className={`${error ? "border-red-500" : ""} ${className}`}
+                disabled={disabled}
+                autoFocus={autoFocus}
                 aria-invalid={error ? "true" : "false"}
                 aria-describedby={error ? `${name}-error` : undefined}
             />
