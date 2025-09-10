@@ -29,21 +29,59 @@ export async function signUp(params: SignUpParams) {
   const { uid, name, email } = params;
 
   try {
-    // check if user exists in db
+    // Check if user already exists in db with this UID
     const userRecord = await db.collection("users").doc(uid).get();
-    if (userRecord.exists)
+
+    if (userRecord.exists) {
       return {
         success: false,
         message: "User already exists. Please sign in.",
       };
+    }
 
-    // save user to db
+    // Check if there's a temporary account with this email
+    const tempUserQuery = await db
+      .collection("users")
+      .where("email", "==", email)
+      .where("temporaryAccount", "==", true)
+      .get();
+
+    if (!tempUserQuery.empty) {
+      // Found a temporary account - update it instead of creating a new one
+      const tempUserDoc = tempUserQuery.docs[0];
+
+      // Update the temporary account with permanent user details
+      await db.collection("users").doc(tempUserDoc.id).update({
+        name,
+        email,
+        profileURL: "",
+        temporaryAccount: false, // Convert to permanent account
+        updatedAt: new Date().toISOString()
+      });
+
+      // Delete the new auth user that was created, as we'll keep using the temp account ID
+      // This is needed to avoid having duplicate accounts
+      try {
+        await auth.deleteUser(uid);
+      } catch (deleteError) {
+        console.error("Error deleting duplicate auth user:", deleteError);
+        // Continue anyway since the main update succeeded
+      }
+
+      return {
+        success: true,
+        message: "Your account has been activated successfully. Please sign in.",
+      };
+    }
+
+    // No temporary account found, create a new permanent account
     await db.collection("users").doc(uid).set({
       name,
       email,
       role: UserRole.USER,
       profileURL: "",
-      // resumeURL: "",
+      temporaryAccount: false,
+      createdAt: new Date().toISOString()
     });
 
     return {
@@ -144,7 +182,7 @@ export async function getUserById(userId: string): Promise<User | null> {
     return { id: userDoc.id, ...(userDoc.data() as Omit<User, "id">) } as User;
   } catch (error) {
     console.error("Error fetching user by id:", error);
-
+    return null;
   }
 }
 
@@ -186,5 +224,58 @@ export async function getUserByEmail(email: string): Promise<User | null> {
   } catch (error) {
     console.log(error);
     return null;
+  }
+}
+
+/**
+ * Converts a temporary user account to a permanent one
+ * This function is useful when a user tries to sign up with an email that was previously
+ * used for a temporary account during an interview invitation
+ */
+export async function convertTemporaryUserToPermanent({
+  email,
+  name,
+  uid,
+}: {
+  email: string;
+  name: string;
+  uid: string;
+}): Promise<{ success: boolean; message: string; userId?: string }> {
+  try {
+    // Find temporary user with this email
+    const tempUserQuery = await db
+      .collection("users")
+      .where("email", "==", email)
+      .where("temporaryAccount", "==", true)
+      .get();
+
+    if (tempUserQuery.empty) {
+      return {
+        success: false,
+        message: "No temporary account found for this email address.",
+      };
+    }
+
+    const tempUserDoc = tempUserQuery.docs[0];
+    const tempUserId = tempUserDoc.id;
+
+    // Update the temporary account to make it permanent
+    await db.collection("users").doc(tempUserId).update({
+      name,
+      temporaryAccount: false,
+      updatedAt: new Date().toISOString(),
+    });
+
+    return {
+      success: true,
+      message: "Temporary account successfully converted to permanent account.",
+      userId: tempUserId,
+    };
+  } catch (error) {
+    console.error("Error converting temporary user to permanent:", error);
+    return {
+      success: false,
+      message: "Failed to convert temporary account to permanent account.",
+    };
   }
 }

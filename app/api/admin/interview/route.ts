@@ -1,11 +1,14 @@
 import { db } from "@/firebase/admin";
 // import { getRandomInterviewCover } from "@/lib/utils";
-import { getCurrentUser } from "@/lib/actions/auth.action";
+import { getCurrentUser, verificationUserSession } from "@/lib/actions/auth.action";
 
 export async function POST(request: Request) {
     try {
         // Get current user to check if they have admin role
-        const user = await getCurrentUser();
+        const authHeader = request.headers.get("Authorization");
+        const token = authHeader?.split(" ")[1] as string;
+
+        const user = await verificationUserSession(token);
 
         if (!user || user.role !== "admin") {
             return Response.json({
@@ -51,10 +54,13 @@ export async function POST(request: Request) {
     }
 }
 
-export async function GET() {
+export async function GET(request: Request) {
     try {
         // Get current user to check if they have admin role
-        const user = await getCurrentUser();
+        const authHeader = request.headers.get("Authorization");
+        const token = authHeader?.split(" ")[1] as string;
+
+        const user = await verificationUserSession(token);
 
         if (!user || user.role !== "admin") {
             return Response.json({

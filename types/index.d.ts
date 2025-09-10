@@ -49,12 +49,12 @@ interface Invitation {
   id: string;
   interviewId: string;
   senderId: string;
-  senderName: string;
   recipientId: string;
   message?: string;
-  status: 'pending' | 'accepted' | 'completed';
+  status: 'pending' | 'accepted' | 'completed' | 'sent';
   createdAt: string;
   invitationToken: string;
+  deadline?: string;     // Added deadline field
   acceptedAt?: string;
   completedAt?: string;
 }
@@ -65,6 +65,7 @@ interface User {
   id: string;
   role: UserRole;
   profileURL?: string;
+  temporaryAccount?: boolean;
 }
 
 interface InterviewCardProps {
