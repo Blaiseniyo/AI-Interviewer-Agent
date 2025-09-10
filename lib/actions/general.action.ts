@@ -120,7 +120,7 @@ export async function getFeedbackByInterviewId(
 
 export async function getLatestInterviews(
   params: GetLatestInterviewsParams
-): Promise<Interview[] | null> {
+): Promise<Interview[]> {
   const { userId, limit = 20 } = params;
 
   // Simplified query - only filter by finalized to avoid index requirement
@@ -148,7 +148,7 @@ export async function getLatestInterviews(
 
 export async function getInterviewsByUserId(
   userId?: string
-): Promise<Interview[] | null> {
+): Promise<Interview[]> {
   // If userId is undefined or null, return empty array
   if (!userId) {
     return [];
@@ -172,27 +172,62 @@ export async function getInterviewsByUserId(
   });
 }
 
-export async function getAllInterviews(): Promise<Interview[] | null> {
+export async function getAllInterviews(): Promise<Interview[]> {
   try {
     const interviews = await db.collection("interviews").get();
 
-    const interviewData = interviews.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    })) as Interview[];
+    // Add sanitization to ensure all interviews have valid data
+    const interviewData = interviews.docs
+      .map((doc) => {
+        try {
+          const data = doc.data();
+          // Ensure createdAt exists and is valid for sorting
+          if (!data.createdAt) {
+            data.createdAt = new Date().toISOString();
+          }
+
+          // Return sanitized interview object
+          return {
+            id: doc.id,
+            role: data.role || '',
+            level: data.level || '',
+            questions: Array.isArray(data.questions) ? data.questions : [],
+            type: data.type || '',
+            userId: data.userId || '',
+            techstack: Array.isArray(data.techstack) ? data.techstack : [],
+            finalized: !!data.finalized,
+            createdAt: data.createdAt,
+          };
+        } catch (err) {
+          console.error("Error processing interview document:", err);
+          return null;
+        }
+      })
+      .filter(Boolean) as Interview[];
 
     return interviewData.sort((a, b) => {
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      try {
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      } catch (err) {
+        return 0; // Default sort position if dates are invalid
+      }
     });
   } catch (error) {
     console.error("Error fetching all interviews:", error);
-    return null;
+    return [];
   }
+}
+
+interface AdminFilterParams {
+  role?: string;
+  type?: string;
+  dateFrom?: string;
+  dateTo?: string;
 }
 
 export async function getFilteredInterviews(
   filters: AdminFilterParams
-): Promise<Interview[] | null> {
+): Promise<Interview[]> {
   try {
     const all = await getAllInterviews();
     if (!all) return [];
@@ -242,7 +277,7 @@ export async function getFilteredInterviews(
     return filtered;
   } catch (error) {
     console.error("Error filtering interviews:", error);
-    return null;
+    return [];
   }
 }
 
@@ -251,12 +286,16 @@ export async function getInterviewWithFeedback(
 ): Promise<any> {
   try {
     const interview = await getInterviewById(interviewId);
-    if (!interview) return null;
+    if (!interview) return { feedback: null };
 
-    const feedback = await getFeedbackByInterviewId({
-      interviewId,
-      userId: interview.userId,
-    });
+    // Only fetch feedback if userId exists
+    let feedback = null;
+    if (interview.userId) {
+      feedback = await getFeedbackByInterviewId({
+        interviewId,
+        userId: interview.userId,
+      });
+    }
 
     return {
       ...interview,
@@ -264,7 +303,7 @@ export async function getInterviewWithFeedback(
     };
   } catch (error) {
     console.error("Error fetching interview with feedback:", error);
-    return null;
+    return { feedback: null };
   }
 }
 

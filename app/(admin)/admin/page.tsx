@@ -6,7 +6,14 @@ import Image from "next/image";
 import { formatDate } from "@/lib/utils";
 
 const AdminDashboard = async () => {
-  const interviews = await getAllInterviews();
+  // Add try-catch for error handling during prerendering
+  let interviews: any[] = [];
+  try {
+    const result = await getAllInterviews();
+    interviews = Array.isArray(result) ? result : [];
+  } catch (error) {
+    console.error("Error fetching interviews:", error);
+  }
 
   return (
     <div className="w-full">
@@ -58,7 +65,7 @@ const AdminDashboard = async () => {
           Previously Created Interviews
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {interviews && interviews.length > 0 ? (
+          {Array.isArray(interviews) && interviews.length > 0 ? (
             interviews.slice(0, 4).map((interview) => (
               <div
                 key={interview.id}

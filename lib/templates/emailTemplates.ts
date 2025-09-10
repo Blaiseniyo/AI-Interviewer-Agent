@@ -80,7 +80,7 @@ export function invitationEmailTemplate({
 }: InvitationEmailTemplateProps): string {
     const content = `
     <div class="header">
-      <h2>Mock Interview Invitation</h2>
+      <h2>Interview Invitation</h2>
     </div>
     <div class="content">
       <p>Hello, <strong>${receiverName}</strong></p>

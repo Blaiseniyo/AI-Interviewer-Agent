@@ -47,26 +47,38 @@ const AuthForm = ({ type }: { type: FormType }) => {
       if (type === "sign-up") {
         const { name, email, password } = data;
 
-        const userCredential = await createUserWithEmailAndPassword(
-          auth,
-          email,
-          password
-        );
+        try {
+          // Try to create a new user
+          const userCredential = await createUserWithEmailAndPassword(
+            auth,
+            email,
+            password
+          );
 
-        const result = await signUp({
-          uid: userCredential.user.uid,
-          name: name!,
-          email,
-          password,
-        });
+          const result = await signUp({
+            uid: userCredential.user.uid,
+            name: name!,
+            email,
+            password,
+          });
 
-        if (!result.success) {
-          toast.error(result.message);
-          return;
+          if (!result.success) {
+            toast.error(result.message);
+            return;
+          }
+
+          toast.success(result.message);
+          router.push("/sign-in");
+        } catch (authError: any) {
+          // Firebase might throw error if email already exists
+          if (authError.code === "auth/email-already-in-use") {
+            // This could be a temporary account
+            toast.error("This email is already in use. Please sign in.");
+            router.push("/sign-in");
+            return;
+          }
+          throw authError; // Re-throw other errors to be caught by outer catch block
         }
-
-        toast.success("Account created successfully. Please sign in.");
-        router.push("/sign-in");
       } else {
         const { email, password } = data;
 

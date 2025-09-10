@@ -12,25 +12,36 @@ import { getFeedbackByInterviewId } from "@/lib/actions/general.action";
 const InterviewCard = async ({
   interviewId,
   userId,
-  role,
-  type,
-  techstack,
-  createdAt,
+  role = '',
+  type = '',
+  techstack = [],
+  createdAt = '',
   showCandidate,
   isAdmin = false,
 }: InterviewCardProps) => {
-  const feedback =
-    userId && interviewId
-      ? await getFeedbackByInterviewId({
-          interviewId,
-          userId,
-        })
-      : null;
+  let feedback = null;
+  try {
+    if (userId && interviewId) {
+      feedback = await getFeedbackByInterviewId({
+        interviewId,
+        userId,
+      });
+    }
+  } catch (error) {
+    console.error("Error fetching feedback:", error);
+  }
 
-  const candidateName =
-    showCandidate && userId ? (await getUserById(userId))?.name : undefined;
+  let candidateName;
+  try {
+    if (showCandidate && userId) {
+      const user = await getUserById(userId);
+      candidateName = user?.name;
+    }
+  } catch (error) {
+    console.error("Error fetching candidate:", error);
+  }
 
-  const normalizedType = /mix/gi.test(type) ? "Mixed" : type;
+  const normalizedType = type ? (/mix/gi.test(type) ? "Mixed" : type) : '';
 
   const badgeColor =
     {
@@ -110,15 +121,15 @@ const InterviewCard = async ({
                 isAdmin
                   ? `/admin/interviews/${interviewId}`
                   : feedback
-                  ? `/interview/${interviewId}/feedback`
-                  : `/interview/${interviewId}`
+                    ? `/interview/${interviewId}/feedback`
+                    : `/interview/${interviewId}`
               }
             >
               {isAdmin
                 ? "View Details"
                 : feedback
-                ? "Check Feedback"
-                : "View Interview"}
+                  ? "Check Feedback"
+                  : "View Interview"}
             </Link>
           </Button>
         </div>
