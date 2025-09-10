@@ -167,3 +167,8 @@ export interface InterviewTranscriptProps {
   maxPreviewMessages?: number;
   user: User;
 }
+
+export interface CandidatesTableProps {
+  candidates: Candidate[];
+  interviewId: string;
+}
