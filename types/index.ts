@@ -157,3 +157,13 @@ export interface InterviewDetailsProps {
   interviewId: string;
   interviewRole: string;
 }
+
+export interface InterviewTranscriptProps {
+  interviewId: string;
+  userId: string;
+  compact?: boolean;
+  fullPage?: boolean;
+  previewMode?: boolean;
+  maxPreviewMessages?: number;
+  user: User;
+}
