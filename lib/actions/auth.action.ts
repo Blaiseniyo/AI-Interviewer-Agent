@@ -2,6 +2,7 @@
 
 import { auth, db } from "@/firebase/admin";
 import { cookies } from "next/headers";
+import { SignInParams, SignUpParams, User, UserRole } from "@/types";
 
 // Session duration (1 week)
 const SESSION_DURATION = 60 * 60 * 24 * 7;
@@ -171,6 +172,14 @@ export async function getCurrentUser(): Promise<User | null> {
     // Invalid or expired session
     return null;
   }
+}
+
+// Get redirect path based on user role
+export async function getRedirectPath(): Promise<string> {
+  const user = await getCurrentUser();
+  if (!user) return "/sign-in";
+
+  return user.role === UserRole.ADMIN ? "/admin" : "/";
 }
 
 

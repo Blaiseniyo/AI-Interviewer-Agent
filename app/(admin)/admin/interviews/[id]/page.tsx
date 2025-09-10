@@ -1,11 +1,10 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Users, Calendar, Code, Award } from "lucide-react";
-import { getInterviewById } from "@/lib/actions/general.action";
+import { getInterviewById, getCandidatesByInterviewId } from "@/lib/actions/general.action";
 import { notFound } from "next/navigation";
-import CandidatesTable from "@/components/CandidatesTable";
-import { getCandidatesByInterviewId } from "@/lib/actions/general.action";
 import { formatDate } from "@/lib/utils";
+import InterviewCandidatesDetails from "@/components/InterviewCandidatesDetails";
 
 type InterviewPageProps = {
   params: {
@@ -104,16 +103,11 @@ async function InterviewPage({ params }: InterviewPageProps) {
         </div>
       </div>
 
-      <div className="px-8">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-semibold text-white">Candidates</h2>
-          <Button className="bg-primary-200 hover:bg-primary-200/80 text-dark-100">
-            Invite Candidate
-          </Button>
-        </div>
-
-        <CandidatesTable candidates={candidates} interviewId={params.id} />
-      </div>
+      <InterviewCandidatesDetails
+        candidates={candidates}
+        interviewId={params.id}
+        interviewRole={interview.role}
+      />
     </div>
   );
 }

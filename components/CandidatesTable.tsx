@@ -2,20 +2,9 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Eye } from "lucide-react";
 import { getStatusBadge, formatDate } from "@/lib/utils";
+import { CandidatesTableProps } from "@/types";
 
-interface Candidate {
-  id: string;
-  name: string;
-  email: string;
-  status: string;
-  score: number | null;
-  completedAt: string | null;
-}
 
-interface CandidatesTableProps {
-  candidates: Candidate[];
-  interviewId: string;
-}
 
 const CandidatesTable = ({ candidates, interviewId }: CandidatesTableProps) => {
   return (

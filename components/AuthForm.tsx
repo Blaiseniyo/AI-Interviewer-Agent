@@ -17,7 +17,8 @@ import {
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 
-import { signIn, signUp } from "@/lib/actions/auth.action";
+import { signIn, signUp, getRedirectPath } from "@/lib/actions/auth.action";
+import { FormType } from "@/types";
 import FormField from "./FormField";
 
 const authFormSchema = (type: FormType) => {
@@ -99,7 +100,9 @@ const AuthForm = ({ type }: { type: FormType }) => {
         });
 
         toast.success("Signed in successfully.");
-        router.push("/");
+
+        const redirectPath = await getRedirectPath();
+        router.push(redirectPath);
       }
     } catch (error) {
       console.log(error);

@@ -6,6 +6,7 @@ import { getFeedbackByInterviewId } from "@/lib/actions/general.action";
 import { getUserById } from "@/lib/actions/auth.action";
 import { notFound } from "next/navigation";
 import { formatDate, getScoreColor, getScoreLabel } from "@/lib/utils";
+import InterviewTranscript from "@/components/InterviewTranscription";
 
 type FeedbackPageProps = {
   params: {
@@ -99,6 +100,31 @@ async function FeedbackPage({ params }: FeedbackPageProps) {
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="px-8 mb-8">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-semibold text-white">
+            Interview Transcript
+          </h2>
+          <Link href={`/admin/interviews/${params.id}/transcript/${params.candidateId}`}>
+            <Button
+              variant="outline"
+              size="sm"
+              className="border-primary-200/50 text-primary-200 hover:bg-primary-200/10"
+            >
+              View Full Transcript
+            </Button>
+          </Link>
+        </div>
+        <InterviewTranscript
+          interviewId={params.id}
+          userId={params.candidateId}
+          compact={false}
+          previewMode={true}
+          maxPreviewMessages={8}
+          user={candidate}
+        />
       </div>
 
       <div className="px-8 mb-8">

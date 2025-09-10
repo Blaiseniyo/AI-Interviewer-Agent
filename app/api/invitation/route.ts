@@ -154,8 +154,8 @@ export const POST = withAdminAuthHandler(async (request: Request, user: User) =>
                     senderName: user.name,
                     receiverName: recipientUser.name || recipientUser.email.split('@')[0],
                     invitationLink,
-                    interviewRole: interview?.role || "technical",
-                    interviewLevel: interview?.level || "intermediate",
+                    interviewRole: interview?.role || "Interview",
+                    interviewLevel: interview?.level || "Entry",
                 });
 
                 emailStatus = emailSent
