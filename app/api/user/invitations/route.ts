@@ -6,7 +6,8 @@ import { getUserReceivedInvitations } from "@/lib/actions/userInvitations.action
 export const GET = withAuthHandler(async (request: Request, user: User) => {
     try {
 
-        // Get invitations where user is the recipient (both old and new format)
+        console.log("Fetching invitations for user:", user);
+        // Get invitations where user is the recipient
         const invitations = await getUserReceivedInvitations(user.id);
 
         if (invitations.length === 0) {

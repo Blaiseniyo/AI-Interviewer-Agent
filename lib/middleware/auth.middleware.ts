@@ -7,9 +7,25 @@ import { NextRequest, NextResponse } from "next/server";
  * @returns User object if authenticated or throws a response error
  */
 export async function withAuth(request: Request | NextRequest) {
-    // Get bearer token from request
+    // Try to get bearer token from Authorization header
     const authHeader = request.headers.get("Authorization");
-    const token = authHeader?.split(" ")[1] as string;
+    let token = authHeader?.split(" ")[1];
+
+    const cookieHeader = request.headers.get('Cookie');
+
+    const cookieToken = cookieHeader?.split('; ').find(row => row.startsWith('session='));
+
+    if (cookieToken) {
+        token = cookieToken.split('=')[1];
+    }
+
+    // If still no token, return unauthorized
+    if (!token) {
+        return NextResponse.json({
+            success: false,
+            error: "Unauthorized. Please sign in first."
+        }, { status: 401 });
+    }
 
     const user = await verificationUserSession(token);
 
