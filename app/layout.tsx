@@ -13,8 +13,9 @@ export const metadata: Metadata = {
   title: "Amalitech",
   description: "An AI-powered platform for preparing for mock interviews",
   icons: {
-    icon: "/amali-logo.png",
-    apple: "/apple-touch-icon.png",
+    icon: [{ url: "/amali-logo.png", type: "image/png", sizes: "32x32" }],
+    shortcut: ["/amali-logo.png"],
+    apple: ["/amali-logo.png"],
   },
 };
 

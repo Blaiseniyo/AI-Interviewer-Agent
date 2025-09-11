@@ -1,5 +1,6 @@
 "use server";
 
+import { UserRole } from "@/constants/enums";
 import { auth, db } from "@/firebase/admin";
 import { cookies } from "next/headers";
 
@@ -173,6 +174,14 @@ export async function getCurrentUser(): Promise<User | null> {
   }
 }
 
+// Get redirect path based on user role
+export async function getRedirectPath(): Promise<string> {
+  const user = await getCurrentUser();
+  if (!user) return "/sign-in";
+
+  return user.role === UserRole.ADMIN ? "/admin" : "/";
+}
+
 
 // Get user by id (for admin views and lookups)
 export async function getUserById(userId: string): Promise<User | null> {
@@ -235,7 +244,6 @@ export async function getUserByEmail(email: string): Promise<User | null> {
 export async function convertTemporaryUserToPermanent({
   email,
   name,
-  uid,
 }: {
   email: string;
   name: string;

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Video, Copy, Send } from "lucide-react";
 import { getAllInterviews } from "@/lib/actions/general.action";
-import Image from "next/image";
+// import Image from "next/image";
 import { formatDate } from "@/lib/utils";
 
 const AdminDashboard = async () => {
@@ -23,15 +23,6 @@ const AdminDashboard = async () => {
             Welcome back, Admin!
           </h1>
           <p className="text-light-100">AI-Driven Interviews</p>
-        </div>
-        <div className="flex items-center gap-4">
-          <Image
-            src="/user-avatar.png"
-            alt="User Avatar"
-            width={40}
-            height={40}
-            className="w-10 h-10 rounded-full object-cover"
-          />
         </div>
       </div>
 

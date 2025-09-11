@@ -1,4 +1,5 @@
 import { verificationUserSession } from "@/lib/actions/auth.action";
+// import { User } from "@/public/types";
 import { NextRequest, NextResponse } from "next/server";
 
 /**

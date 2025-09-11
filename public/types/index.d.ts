@@ -130,11 +130,6 @@ interface TechIconProps {
   techStack: string[];
 }
 
-enum UserRole {
-  USER = "user",
-  ADMIN = "admin",
-}
-
 interface SendInvitationEmailParams {
   recipientEmail: string;
   senderName: string;

@@ -1,5 +1,6 @@
 import { interviewCovers, mappings } from "@/constants";
 import { clsx, type ClassValue } from "clsx";
+import { Book, ClipboardPen, LayoutDashboard } from "lucide-react";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -22,7 +23,8 @@ const checkIconExists = async (url: string) => {
   }
 };
 
-export const getTechLogos = async (techArray: string[]) => {
+export const getTechLogos = async (techArray: string[] | undefined) => {
+  if (!techArray) return [];
   const logoURLs = techArray.map((tech) => {
     const normalized = normalizeTechName(tech);
     return {
@@ -77,3 +79,20 @@ export  const getScoreLabel = (score: number) => {
     if (score >= 40) return "Fair";
     return "Poor";
   };
+
+  export const userNavigationItems = [
+    {
+      name: "Dashboard",
+      href: "/",
+      icon: LayoutDashboard,
+    },
+    {
+      name: "Interviews",
+      href: "/interviews",
+      icon: ClipboardPen,
+    }, {
+      name: "Mock Interviews",
+      href: "/mock-interviews",
+      icon: Book,
+    },
+  ];

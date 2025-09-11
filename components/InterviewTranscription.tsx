@@ -2,19 +2,25 @@
 
 import React, { useState, useEffect, Fragment } from "react";
 import { getChatMessagesByInterviewId } from "@/lib/actions/interviewTranscript.action";
+import { ChatMessage } from "@/types";
 import { Button } from "./ui/button";
 import { ChevronUp, MessageCircle } from "lucide-react";
+import { InterviewTranscriptProps } from "@/types";
 
-interface InterviewTranscriptProps {
-    interviewId: string;
-    userId: string;
-    compact?: boolean;
-}
 
-const InterviewTranscript = ({ interviewId, userId, compact = false }: InterviewTranscriptProps) => {
+const InterviewTranscript = ({
+    interviewId,
+    userId,
+    user,
+    compact = false,
+    fullPage = false,
+    previewMode = false,
+    maxPreviewMessages = 6
+}: InterviewTranscriptProps) => {
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [loading, setLoading] = useState(true);
     const [isExpanded, setIsExpanded] = useState(false);
+
 
     useEffect(() => {
         const fetchMessages = async () => {
@@ -106,6 +112,9 @@ const InterviewTranscript = ({ interviewId, userId, compact = false }: Interview
 
     const messageGroups = groupMessages(messages);
 
+    const displayGroups = previewMode ? messageGroups.slice(0, Math.ceil(maxPreviewMessages / 2)) : messageGroups;
+    const hasMoreMessages = previewMode && messageGroups.length > Math.ceil(maxPreviewMessages / 2);
+
     if (compact && !isExpanded) {
         return <ToggleButton />;
     }
@@ -118,20 +127,10 @@ const InterviewTranscript = ({ interviewId, userId, compact = false }: Interview
                 <div className="dark-gradient rounded-xl p-4">
                     <div className="flex justify-between items-center mb-4 border-b border-light-400/20 pb-3">
                         <h3 className="text-xl font-medium text-primary-200">Interview Conversation</h3>
-                        {!compact && (
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={toggleExpand}
-                                className="text-light-400 hover:text-light-100"
-                            >
-                                <ChevronUp size={16} className="mr-1" /> Hide
-                            </Button>
-                        )}
                     </div>
 
-                    <div className="chat-messages flex flex-col gap-5 max-h-[650px] overflow-y-auto pr-2">
-                        {messageGroups.map((group, groupIndex) => {
+                    <div className={`chat-messages flex flex-col gap-5 pr-2 ${!fullPage ? 'max-h-[650px] overflow-y-auto' : ''}`}>
+                        {displayGroups.map((group, groupIndex) => {
                             const senderType = group[0].senderType;
                             const isUser = senderType === 'user';
 
@@ -208,13 +207,33 @@ const InterviewTranscript = ({ interviewId, userId, compact = false }: Interview
 
                                         {isUser && (
                                             <div className="w-8 h-8 rounded-full bg-primary-200 flex items-center justify-center ml-2 self-start">
-                                                <span className="text-xs text-dark-100">You</span>
+                                                <span className="text-xs text-dark-100">{(user?.name).charAt(0).toUpperCase()}</span>
                                             </div>
                                         )}
                                     </div>
                                 </Fragment>
                             );
                         })}
+
+                        {/* Show "View More" for preview mode */}
+                        {hasMoreMessages && (
+                            <div className="flex justify-center mt-6 pt-4 border-t border-light-600/20">
+                                <div className="text-center">
+                                    <p className="text-light-400 text-sm mb-3">
+                                        Showing {displayGroups.length} of {messageGroups.length} conversation parts
+                                    </p>
+                                    <Button
+                                        asChild
+                                        variant="outline"
+                                        className="border-primary-200/50 text-primary-200 hover:bg-primary-200/10"
+                                    >
+                                        <a href={`/admin/interviews/${interviewId}/transcript/${userId}`}>
+                                            View Full Transcript
+                                        </a>
+                                    </Button>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

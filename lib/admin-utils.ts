@@ -1,3 +1,4 @@
+// import { Interview } from "@/public/types";
 import dayjs from "dayjs";
 import {
   LayoutDashboard,
@@ -42,7 +43,7 @@ export const filterInterviews = (
   return filtered;
 };
 
- export const navigationItems = [
+export const adminNavigationItems = [
   {
     name: "Dashboard",
     href: "/admin",

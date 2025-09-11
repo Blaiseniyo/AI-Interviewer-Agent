@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft, Plus, X, Upload, FileText } from "lucide-react";
 
-import { interviewFormSchema } from "@/types/validations";
+import { interviewFormSchema } from "@/public/types/validations";
 
 type InterviewFormData = z.infer<typeof interviewFormSchema>;
 
@@ -188,13 +188,11 @@ const CreateInterview = () => {
                   <div key={field.id} className="question-item">
                     <div className="question-input-wrapper">
                       <Input
-                        placeholder={`Enter your interview question ${
-                          index + 1
-                        }...`}
+                        placeholder={`Enter your interview question ${index + 1
+                          }...`}
                         {...register(`questions.${index}`)}
-                        className={`question-input ${
-                          errors.questions?.[index] ? "border-red-500" : ""
-                        }`}
+                        className={`question-input ${errors.questions?.[index] ? "border-red-500" : ""
+                          }`}
                       />
                       {questionFields.length > 1 && (
                         <Button
