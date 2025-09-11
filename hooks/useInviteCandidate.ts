@@ -52,7 +52,6 @@ export const useInviteCandidate = ({ interviewId, onSuccess }: UseInviteCandidat
             reset();
             onSuccess?.();
         } catch (error) {
-            console.error("Error sending invitation:", error);
             toast.error(
                 error instanceof Error ? error.message : "Failed to send invitation"
             );
