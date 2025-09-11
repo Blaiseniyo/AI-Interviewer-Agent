@@ -24,15 +24,6 @@ const AdminDashboard = async () => {
           </h1>
           <p className="text-light-100">AI-Driven Interviews</p>
         </div>
-        <div className="flex items-center gap-4">
-          <Image
-            src="/user-avatar.png"
-            alt="User Avatar"
-            width={40}
-            height={40}
-            className="w-10 h-10 rounded-full object-cover"
-          />
-        </div>
       </div>
 
       <div className="px-8 mb-12">
