@@ -11,12 +11,14 @@ export async function withAuth(request: Request | NextRequest) {
     const authHeader = request.headers.get("Authorization");
     let token = authHeader?.split(" ")[1];
 
+    console.log("Auth Header token:", token);
     const cookieHeader = request.headers.get('Cookie');
 
     const cookieToken = cookieHeader?.split('; ').find(row => row.startsWith('session='));
 
-    if (cookieToken) {
+    if (cookieToken && !token) {
         token = cookieToken.split('=')[1];
+        console.log("Cookie token:", token);
     }
 
     // If still no token, return unauthorized
