@@ -1,0 +1,67 @@
+[
+    {
+        "invitation": {
+            "id": "XxDcYVxTpybGANMdOWUQ",
+            "interviewId": "ExZKgECa9C3HtbwSOAyC",
+            "senderId": "FFpnhpXw5LQ4bTRhK9iditMBNqA3",
+            "recipientId": "Idiy5mYBv1hZMNfrmHg6Ok8otLP2",
+            "status": "sent",
+            "deadline": "2002-10-23",
+            "createdAt": "2025-09-12T09:31:38.280Z",
+            "invitationToken": "o2hr70991yy5qyn92j8soghhyg0gzgbx"
+        },
+        "interview": {
+            "role": "Back end role",
+            "type": "Technical",
+            "level": "Mid level",
+            "techstack": [
+                "Python",
+                " Django"
+            ],
+            "questions": [
+                "Describe a complex Django project you worked on, detailing the architecture, challenges you faced, and how you overcame them. Focus on specific Python and Django features you utilized.",
+                "Explain the difference between select related and prefetch related in Django ORM. Provide a scenario where using one over the other would significantly improve performance."
+            ],
+            "userId": "FFpnhpXw5LQ4bTRhK9iditMBNqA3",
+            "finalized": true,
+            "coverImage": "/covers/reddit.png",
+            "createdAt": "2025-09-03T14:54:26.537Z"
+        },
+        "sender": {
+            "id": "FFpnhpXw5LQ4bTRhK9iditMBNqA3",
+            "name": "Blaise Niyonkuru",
+            "email": "blaiseniyonkuru12@gmail.com"
+        }
+    },
+    {
+        "invitation": {
+            "id": "bYy20aOjzcpMv2WDhFDF",
+            "interviewId": "XarYJxFCH3oeaqSIQF7r",
+            "senderId": "FFpnhpXw5LQ4bTRhK9iditMBNqA3",
+            "recipientId": "Idiy5mYBv1hZMNfrmHg6Ok8otLP2",
+            "status": "sent",
+            "deadline": "2025-09-30",
+            "createdAt": "2025-09-11T11:05:58.843Z",
+            "invitationToken": "mk7cmjpf57pb13dbapfmbjuishfw15bx"
+        },
+        "interview": {
+            "role": "Python developer",
+            "type": "Technical",
+            "level": "Entry",
+            "questions": [
+                "What various types of data available in python",
+                "What is the difference between a list and a tuple in python"
+            ],
+            "createdBy": "FFpnhpXw5LQ4bTRhK9iditMBNqA3",
+            "coverImage": "",
+            "rubric": "Clearly state all types of data available in python with examples and usecases, and differentiates various differences between a list, tuple and their similarities",
+            "createdAt": "2025-09-08T06:19:25.543Z",
+            "isAdminCreated": true
+        },
+        "sender": {
+            "id": "FFpnhpXw5LQ4bTRhK9iditMBNqA3",
+            "name": "Blaise Niyonkuru",
+            "email": "blaiseniyonkuru12@gmail.com"
+        }
+    }
+]

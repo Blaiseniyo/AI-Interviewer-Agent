@@ -2,24 +2,24 @@ import Link from "next/link";
 import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
-import InterviewCard from "@/components/InterviewCard";
+// import InterviewCard from "@/components/InterviewCard";
 
-import { getCurrentUser } from "@/lib/actions/auth.action";
-import {
-  getInterviewsByUserId,
-  getLatestInterviews,
-} from "@/lib/actions/general.action";
+// import { getCurrentUser } from "@/lib/actions/auth.action";
+// import {
+//   getInterviewsByUserId,
+//   getLatestInterviews,
+// } from "@/lib/actions/general.action";
 
 async function Home() {
-  const user = await getCurrentUser();
+  // const user = await getCurrentUser();
 
-  const [userInterviews, allInterview] = await Promise.all([
-    getInterviewsByUserId(user?.id || undefined),
-    getLatestInterviews({ userId: user?.id || undefined }),
-  ]);
+  // const [userInterviews, allInterview] = await Promise.all([
+  //   getInterviewsByUserId(user?.id || undefined),
+  //   getLatestInterviews({ userId: user?.id || undefined }),
+  // ]);
 
-  const hasPastInterviews = userInterviews.length > 0;
-  const hasUpcomingInterviews = allInterview.length > 0;
+  // const hasPastInterviews = userInterviews.length > 0;
+  // const hasUpcomingInterviews = allInterview.length > 0;
 
   return (
     <>
@@ -31,7 +31,7 @@ async function Home() {
           </p>
 
           <Button asChild className="btn-primary max-sm:w-full">
-            <Link href="/interview">Start an Interview</Link>
+            <Link href="/interview">Create a Mock Interview</Link>
           </Button>
         </div>
 
@@ -44,7 +44,7 @@ async function Home() {
         />
       </section>
 
-      <section className="flex flex-col gap-6 mt-8">
+      {/* <section className="flex flex-col gap-6 mt-8">
         <h2>Your Interviews</h2>
 
         <div className="interviews-section">
@@ -86,7 +86,7 @@ async function Home() {
             <p>There are no interviews available</p>
           )}
         </div>
-      </section>
+      </section> */}
     </>
   );
 }

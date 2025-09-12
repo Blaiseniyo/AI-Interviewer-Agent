@@ -2,10 +2,8 @@
 
 import React, { useState, useEffect, Fragment } from "react";
 import { getChatMessagesByInterviewId } from "@/lib/actions/interviewTranscript.action";
-import { ChatMessage } from "@/types";
 import { Button } from "./ui/button";
 import { ChevronUp, MessageCircle } from "lucide-react";
-import { InterviewTranscriptProps } from "@/types";
 
 
 const InterviewTranscript = ({

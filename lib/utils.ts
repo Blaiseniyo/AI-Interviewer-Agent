@@ -73,26 +73,26 @@ export const getScoreColor = (score: number) => {
   return "text-red-400";
 };
 
-export  const getScoreLabel = (score: number) => {
-    if (score >= 80) return "Excellent";
-    if (score >= 60) return "Good";
-    if (score >= 40) return "Fair";
-    return "Poor";
-  };
+export const getScoreLabel = (score: number) => {
+  if (score >= 80) return "Excellent";
+  if (score >= 60) return "Good";
+  if (score >= 40) return "Fair";
+  return "Poor";
+};
 
-  export const userNavigationItems = [
-    {
-      name: "Dashboard",
-      href: "/",
-      icon: LayoutDashboard,
-    },
-    {
-      name: "Interviews",
-      href: "/interviews",
-      icon: ClipboardPen,
-    }, {
-      name: "Mock Interviews",
-      href: "/mock-interviews",
-      icon: Book,
-    },
-  ];
+export const userNavigationItems = [
+  {
+    name: "Dashboard",
+    href: "/",
+    icon: LayoutDashboard,
+  },
+  {
+    name: "Interviews Invites",
+    href: "/interviews",
+    icon: ClipboardPen,
+  }, {
+    name: "Mock Interviews",
+    href: "/mock-interviews",
+    icon: Book,
+  },
+];

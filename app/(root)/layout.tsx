@@ -15,7 +15,7 @@ const Layout = async ({ children }: { children: ReactNode }) => {
   if (!isUserAuthenticated) redirect("/sign-in");
 
   return (
-    <div className="flex h-screen bg-gray-900">
+    <div className="flex h-screen bg-dark-200">
       <Sidebar />
       <main className="flex-1 p-12 overflow-auto">{children}</main>
     </div>
