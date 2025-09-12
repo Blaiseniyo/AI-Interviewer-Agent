@@ -16,6 +16,7 @@ export const useInviteCandidate = ({ interviewId, onSuccess }: UseInviteCandidat
         resolver: zodResolver(candidateInviteFormSchema),
         defaultValues: {
             email: "",
+            deadline: "",
         },
     });
 
@@ -34,6 +35,7 @@ export const useInviteCandidate = ({ interviewId, onSuccess }: UseInviteCandidat
                 body: JSON.stringify({
                     interviewId,
                     recipientEmail: data.email,
+                    deadline: data.deadline,
                 }),
             });
 

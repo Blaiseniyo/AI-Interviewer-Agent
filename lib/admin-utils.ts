@@ -1,8 +1,11 @@
 // import { Interview } from "@/public/types";
 import dayjs from "dayjs";
 import {
+  Book,
+  ClipboardPen,
   LayoutDashboard,
   List,
+  Users,
 } from "lucide-react";
 
 export interface FilterState {
@@ -54,6 +57,18 @@ export const adminNavigationItems = [
     name: "All Interview",
     href: "/admin/interviews",
     icon: List,
+    isActive: false,
+  },
+  {
+    name: "Interviews Invites",
+    href: "/interviews",
+    icon: ClipboardPen,
+    isActive: false,
+  },  
+  {
+    name: "Mock Interviews",
+    href: "/mock-interviews",
+    icon: Book,
     isActive: false,
   },
 ];

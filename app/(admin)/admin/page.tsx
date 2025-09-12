@@ -2,17 +2,16 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Video, Copy, Send } from "lucide-react";
 import { getAllInterviews } from "@/lib/actions/general.action";
-// import Image from "next/image";
 import { formatDate } from "@/lib/utils";
+import { toast } from "sonner";
 
 const AdminDashboard = async () => {
-  // Add try-catch for error handling during prerendering
-  let interviews: any[] = [];
+  let interviews: Interview[] = [];
   try {
     const result = await getAllInterviews();
     interviews = Array.isArray(result) ? result : [];
-  } catch (error) {
-    console.error("Error fetching interviews:", error);
+  } catch (error: any) {
+    toast.error(error.message || "Error fetching interviews");
   }
 
   return (
@@ -31,8 +30,8 @@ const AdminDashboard = async () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-dark-200 rounded-xl p-6 shadow-sm border border-light-600/20 hover:shadow-md transition-shadow duration-200">
             <div className="flex items-start justify-between mb-4">
-              <div className="w-12 h-12 bg-primary-200/20 rounded-lg flex items-center justify-center">
-                <Video className="w-6 h-6 text-primary-200" />
+              <div className="w-12 h-12 bg-primary-200 rounded-lg flex items-center justify-center">
+                <Video className="w-6 h-6 text-gray-300" />
               </div>
             </div>
             <h3 className="text-lg font-semibold text-white mb-2">
@@ -63,8 +62,8 @@ const AdminDashboard = async () => {
                 className="bg-dark-200 rounded-xl p-6 shadow-sm border border-light-600/20 hover:shadow-md transition-shadow duration-200"
               >
                 <div className="flex items-start justify-between mb-4">
-                  <div className="w-10 h-10 bg-primary-200/20 rounded-lg flex items-center justify-center">
-                    <span className="text-primary-200 font-semibold text-sm">
+                  <div className="w-10 h-10 bg-primary-200 rounded-lg flex items-center justify-center">
+                    <span className="text-gray-300 font-semibold text-sm">
                       {interview.role.charAt(0).toUpperCase()}
                     </span>
                   </div>

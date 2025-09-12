@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { IconContainer } from "@/components/ui/IconContainer";
 import { ArrowLeft, Users, Calendar, Code, Award } from "lucide-react";
 import { getInterviewById } from "@/lib/actions/general.action";
 import { notFound } from "next/navigation";
-import CandidatesTable from "@/components/CandidatesTable";
 import { getCandidatesByInterviewId } from "@/lib/actions/general.action";
 import { formatDate } from "@/lib/utils";
+import InterviewCandidatesDetails from "@/components/InterviewCandidatesDetails";
 
 type InterviewPageProps = {
   params: {
@@ -53,9 +54,7 @@ async function InterviewPage({ params }: InterviewPageProps) {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-primary-200/20 rounded-lg flex items-center justify-center">
-                <Award className="w-5 h-5 text-primary-200" />
-              </div>
+              <IconContainer icon={Award} />
               <div>
                 <p className="text-sm text-light-100">Role</p>
                 <p className="text-white font-medium">{interview.role}</p>
@@ -63,9 +62,7 @@ async function InterviewPage({ params }: InterviewPageProps) {
             </div>
 
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-primary-200/20 rounded-lg flex items-center justify-center">
-                <Code className="w-5 h-5 text-primary-200" />
-              </div>
+              <IconContainer icon={Code} />
               <div>
                 <p className="text-sm text-light-100">Type</p>
                 <p className="text-white font-medium">{interview.type}</p>
@@ -73,9 +70,7 @@ async function InterviewPage({ params }: InterviewPageProps) {
             </div>
 
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-primary-200/20 rounded-lg flex items-center justify-center">
-                <Calendar className="w-5 h-5 text-primary-200" />
-              </div>
+              <IconContainer icon={Calendar} />
               <div>
                 <p className="text-sm text-light-100">Created</p>
                 <p className="text-white font-medium">
@@ -85,9 +80,7 @@ async function InterviewPage({ params }: InterviewPageProps) {
             </div>
 
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-primary-200/20 rounded-lg flex items-center justify-center">
-                <Users className="w-5 h-5 text-primary-200" />
-              </div>
+              <IconContainer icon={Users} />
               <div>
                 <p className="text-sm text-light-100">Candidates</p>
                 <p className="text-white font-medium">{candidates.length}</p>
@@ -104,16 +97,11 @@ async function InterviewPage({ params }: InterviewPageProps) {
         </div>
       </div>
 
-      <div className="px-8">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-semibold text-white">Candidates</h2>
-          <Button className="bg-primary-200 hover:bg-primary-200/80 text-dark-100">
-            Invite Candidate
-          </Button>
-        </div>
-
-        <CandidatesTable candidates={candidates} interviewId={params.id} />
-      </div>
+      <InterviewCandidatesDetails
+        candidates={candidates}
+        interviewId={params.id}
+        interviewRole={interview.role}
+      />
     </div>
   );
 }

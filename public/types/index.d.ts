@@ -138,3 +138,9 @@ interface SendInvitationEmailParams {
   interviewRole: string;
   interviewLevel: string;
 }
+
+interface InterviewDetailsProps {
+  candidates: Candidate[];
+  interviewId: string;
+  interviewRole: string;
+}
