@@ -80,7 +80,7 @@ const AdminDashboard = async () => {
                     size="sm"
                     className="flex-1 border-light-600/30 text-light-100 hover:bg-light-600/20"
                   >
-                    <Copy className="w-4 h-4 mr-2" />
+                    <Copy className="h-4" />
                     Copy Link
                   </Button>
                   <Button
@@ -89,7 +89,7 @@ const AdminDashboard = async () => {
                     className="flex-1 bg-primary-200 hover:bg-primary-200/80 text-dark-100"
                   >
                     <Link href={`/admin/interviews/${interview.id}`}>
-                      <Send className="w-4 h-4 mr-2" />
+                      <Send className="w-4 h-4" />
                       View
                     </Link>
                   </Button>
@@ -97,7 +97,7 @@ const AdminDashboard = async () => {
               </div>
             ))
           ) : (
-            <p>Ooops! No interviews found</p>
+            <p>Ooops! You have not created any interviews yet.</p>
           )}
         </div>
       </div>

@@ -5,6 +5,7 @@ import { google } from "@ai-sdk/google";
 
 import { db } from "@/firebase/admin";
 import { feedbackSchema } from "@/constants";
+import { where } from "firebase/firestore";
 
 export async function createFeedback(params: CreateFeedbackParams) {
   const { interviewId, userId, transcript, feedbackId } = params;
@@ -216,6 +217,14 @@ export async function getAllInterviews(): Promise<Interview[]> {
     console.error("Error fetching all interviews:", error);
     return [];
   }
+}
+
+export async function getInterviewsCreatedByAdmin(adminId: string): Promise<Interview[]> {
+  const interviews = await db.collection("interviews").where("createdBy", "==", adminId).where("isAdminCreated", "==", true).get();
+  return interviews.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  })) as Interview[];
 }
 
 interface AdminFilterParams {

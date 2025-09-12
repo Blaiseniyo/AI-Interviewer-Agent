@@ -1,12 +1,15 @@
 import InterviewCard from "@/components/InterviewCard";
-import { getAllInterviews } from "@/lib/actions/general.action";
+import { getCurrentUser } from "@/lib/actions/auth.action";
+import { getInterviewsCreatedByAdmin } from "@/lib/actions/general.action";
 
 async function Interviews() {
-  // Add try-catch for error handling during prerendering
-  let interviews: any[] = [];
+  let interviews: Interview[] = [];
+  const user = await getCurrentUser();
   try {
-    const result = await getAllInterviews();
-    interviews = Array.isArray(result) ? result : [];
+    if(user?.id) {
+      const result = await getInterviewsCreatedByAdmin(user?.id);
+      interviews = Array.isArray(result) ? result : [];
+    }
   } catch (error) {
     console.error("Error fetching interviews:", error);
   }
@@ -15,6 +18,7 @@ async function Interviews() {
     <>
       <section className="flex flex-col mx-6 gap-6 mt-8">
         <h2>Interviews</h2>
+        <p>View all interviews you have created.</p>
         <div className="interviews-section">
           {Array.isArray(interviews) && interviews.length > 0 ? (
             interviews.map((interview) => (
