@@ -1,0 +1,293 @@
+{
+  "name": "AI_Interviewer_Agent",
+  "nodes": [
+    {
+      "name": "introduction",
+      "type": "conversation",
+      "isStart": true,
+      "metadata": {
+        "position": {
+          "x": -584.7374653800352,
+          "y": -326.9269978224223
+        }
+      },
+      "prompt": "You are a helpful assistant",
+      "model": {
+        "model": "gpt-4.1-mini",
+        "provider": "openai",
+        "maxTokens": 250,
+        "temperature": 0.3
+      },
+      "messagePlan": {
+        "firstMessage": "Hello {{username}}! Let's prepare your interview. I'll ask you a few questions and generate a perfect interview just for you. Are you ready?"
+      },
+      "toolIds": []
+    },
+    {
+      "name": "apiRequest_1756225518793",
+      "type": "tool",
+      "metadata": {
+        "position": {
+          "x": -140.75058392842567,
+          "y": 575.177732367814
+        }
+      },
+      "tool": {
+        "url": "https://ai-interviewer-agent-red.vercel.app/api/vapi/generate",
+        "body": {
+          "type": "object",
+          "required": [
+            "role",
+            "type",
+            "level",
+            "techstack",
+            "amount"
+          ],
+          "properties": {
+            "role": {
+              "type": "string",
+              "default": "{{role}}",
+              "description": ""
+            },
+            "type": {
+              "type": "string",
+              "default": "{{type}}",
+              "description": ""
+            },
+            "level": {
+              "type": "string",
+              "default": "{{level}}",
+              "description": ""
+            },
+            "amount": {
+              "type": "string",
+              "default": "{{amount}}",
+              "description": ""
+            },
+            "userid": {
+              "type": "string",
+              "default": "{{userid}}",
+              "description": ""
+            },
+            "techstack": {
+              "type": "string",
+              "default": "{{techstack}}",
+              "description": ""
+            }
+          }
+        },
+        "type": "apiRequest",
+        "method": "POST",
+        "function": {
+          "name": "api_request_tool",
+          "parameters": {
+            "type": "object",
+            "required": [],
+            "properties": {}
+          },
+          "description": "API request tool"
+        },
+        "messages": [
+          {
+            "type": "request-start",
+            "blocking": false
+          }
+        ],
+        "variableExtractionPlan": {
+          "schema": {
+            "type": "object",
+            "required": [],
+            "properties": {}
+          },
+          "aliases": []
+        }
+      }
+    },
+    {
+      "name": "hangup_1756397145757",
+      "type": "tool",
+      "metadata": {
+        "position": {
+          "x": -1042.5444298119282,
+          "y": 90.47232933700874
+        }
+      },
+      "tool": {
+        "type": "endCall",
+        "function": {
+          "name": "untitled_tool",
+          "parameters": {
+            "type": "object",
+            "required": [],
+            "properties": {}
+          }
+        },
+        "messages": [
+          {
+            "type": "request-start",
+            "content": "Thank you, {{username}}, please reach out whenever you are ready for your mock interview, and I'll help you prepare for your next interview like a pro.\n\nSee you!\n\nBye!",
+            "blocking": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "hangup_1756397388893",
+      "type": "tool",
+      "metadata": {
+        "position": {
+          "x": -550.2495999386008,
+          "y": 1291.1798398825122
+        }
+      },
+      "tool": {
+        "type": "endCall",
+        "function": {
+          "name": "untitled_tool",
+          "parameters": {
+            "type": "object",
+            "required": [],
+            "properties": {}
+          }
+        },
+        "messages": [
+          {
+            "type": "request-start",
+            "content": "The app is currently facing an issue creating the interview for you. Please try again later.",
+            "blocking": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "hangup_1756397613267",
+      "type": "tool",
+      "metadata": {
+        "position": {
+          "x": 217.48572748486524,
+          "y": 1295.1315454986723
+        }
+      },
+      "tool": {
+        "type": "endCall",
+        "function": {
+          "name": "untitled_tool",
+          "parameters": {
+            "type": "object",
+            "required": [],
+            "properties": {}
+          }
+        },
+        "messages": [
+          {
+            "type": "request-start",
+            "content": "I created the interview. Please go ahead and take it.\nBest of luck.",
+            "blocking": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "conversation_1756402260358",
+      "type": "conversation",
+      "metadata": {
+        "position": {
+          "x": -66.77275479030803,
+          "y": 67.56020212292067
+        }
+      },
+      "prompt": "Ask the user about the kind of interview they want to prepare for. Ask the following questions:\n1. Role: What role are they interviewing for?\n2. type: the type of interview they are aiming for, is it a Technical, behavioural or mixed interview\n3. level: The job experience level\n4. techstack: a list of technologies to cover during the job interview\n5. amount: How many questions do they want generated for their interview",
+      "model": {
+        "model": "gpt-4.1-mini",
+        "provider": "openai",
+        "maxTokens": 250,
+        "temperature": 0.3
+      },
+      "variableExtractionPlan": {
+        "output": [
+          {
+            "enum": [],
+            "type": "string",
+            "title": "role",
+            "description": "What role are they interviewing for?"
+          },
+          {
+            "enum": [],
+            "type": "string",
+            "title": "type",
+            "description": "What type of interview are they aiming for: Technical, Behavioural, or Mixed?"
+          },
+          {
+            "enum": [],
+            "type": "string",
+            "title": "level",
+            "description": "The job experience level"
+          },
+          {
+            "enum": [],
+            "type": "string",
+            "title": "amount",
+            "description": "How many questions do they want generated for their interview"
+          },
+          {
+            "enum": [],
+            "type": "string",
+            "title": "techstack",
+            "description": "A list of technologies to cover during the job interview"
+          }
+        ]
+      },
+      "messagePlan": {
+        "firstMessage": ""
+      },
+      "toolIds": []
+    }
+  ],
+  "edges": [
+    {
+      "from": "introduction",
+      "to": "hangup_1756397145757",
+      "condition": {
+        "type": "ai",
+        "prompt": "If the user said no"
+      }
+    },
+    {
+      "from": "apiRequest_1756225518793",
+      "to": "hangup_1756397388893",
+      "condition": {
+        "type": "ai",
+        "prompt": "If the API call is not successful."
+      }
+    },
+    {
+      "from": "apiRequest_1756225518793",
+      "to": "hangup_1756397613267",
+      "condition": {
+        "type": "ai",
+        "prompt": "If the API call is successful."
+      }
+    },
+    {
+      "from": "introduction",
+      "to": "conversation_1756402260358",
+      "condition": {
+        "type": "ai",
+        "prompt": "if the user said yes"
+      }
+    },
+    {
+      "from": "conversation_1756402260358",
+      "to": "apiRequest_1756225518793",
+      "condition": {
+        "type": "ai",
+        "prompt": ""
+      }
+    }
+  ],
+  "voice": {
+    "voiceId": "Lily",
+    "provider": "vapi"
+  },
+  "globalPrompt": "## Identity & Purpose\n\nYou are Alex, an expert AI interview preparation coach. You help job seekers prepare for interviews across all industries and experience levels, from entry-level to executive positions. Your expertise spans behavioural interviews, technical assessments, case studies, and industry-specific scenarios.\n\n## Speaking Stype & Tone\n\n- Conversational and Supportive: Maintain a warm, encouraging, and professional tone\n\n- Natural Pacing: Speak at a moderate pace with natural pauses for comprehension\n\n- Active Listening: Acknowledge what the user says before responding\n\n- Confidence Building: Use positive reinforcement and constructive feedback\n\n- Adaptive Communication: Match the user's energy level while maintaining professionalism\n\n"
+}

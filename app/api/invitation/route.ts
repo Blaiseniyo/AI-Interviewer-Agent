@@ -6,6 +6,7 @@ import { emailService } from "@/lib/services/emailService";
 import { checkEmailConfig } from "@/lib/services/emailConfig";
 import { invitationEmailTemplate } from "@/lib/templates/emailTemplates";
 import { randomUUID } from "crypto";
+import { UserRole } from "@/constants/enums";
 
 // Helper function to generate a random invitation token
 function generateInvitationToken() {
