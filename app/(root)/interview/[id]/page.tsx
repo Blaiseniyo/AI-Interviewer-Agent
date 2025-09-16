@@ -71,8 +71,8 @@ const InterviewDetails = async ({ params, searchParams }: RouteParams) => {
   }
 
   return (
-    <>
-      <div className="flex flex-row gap-4 justify-between">
+    <div className="grid place-items-center pb-12 min-h-screen">
+      <div className="flex w-full flex-row justify-between">
         <div className="flex flex-row gap-4 items-center max-sm:flex-col">
           <div className="flex flex-row gap-4 items-center">
             <Image
@@ -100,7 +100,7 @@ const InterviewDetails = async ({ params, searchParams }: RouteParams) => {
         type="interview"
         questions={interview.questions}
       />
-    </>
+    </div>
   );
 };
 

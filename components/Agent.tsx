@@ -114,7 +114,7 @@ const Agent = ({
       }
     }
   }, [messages, callStatus, feedbackId, interviewId, router, type, userId]);
-  
+
   const handleCall = async () => {
     setCallStatus(CallStatus.CONNECTING);
 
@@ -173,13 +173,15 @@ const Agent = ({
         {/* User Profile Card */}
         <div className="card-border">
           <div className="card-content">
-            <Image
-              src="/user-avatar.png"
-              alt="profile-image"
-              width={539}
-              height={539}
-              className="rounded-full object-cover size-[120px]"
-            />
+            <div className="avatar">
+              <Image
+                src="/user-avatar2.png"
+                alt="profile-image"
+                width={539}
+                height={539}
+                // className="rounded-full object-cover size-[120px]"
+              />
+            </div>
             <h3>{userName}</h3>
           </div>
         </div>
