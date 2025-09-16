@@ -147,3 +147,20 @@ interface InterviewDetailsProps {
   interviewId: string;
   interviewRole: string;
 }
+
+interface ChatMessage {
+    id: string;
+    content: string;
+    senderType: 'user' | 'assistant';
+    timestamp?: string;
+}
+
+interface InterviewTranscriptProps {
+    interviewId: string;
+    userId: string;
+    user?: { name: string };
+    compact?: boolean;
+    fullPage?: boolean;
+    previewMode?: boolean;
+    maxPreviewMessages?: number;
+}

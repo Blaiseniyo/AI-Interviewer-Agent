@@ -205,7 +205,7 @@ const InterviewTranscript = ({
 
                                         {isUser && (
                                             <div className="w-8 h-8 rounded-full bg-primary-200 flex items-center justify-center ml-2 self-start">
-                                                <span className="text-xs text-dark-100">{(user?.name).charAt(0).toUpperCase()}</span>
+                                                <span className="text-xs text-dark-100">{(user?.name ?? '').charAt(0).toUpperCase()}</span>
                                             </div>
                                         )}
                                     </div>
