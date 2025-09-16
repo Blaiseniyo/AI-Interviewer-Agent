@@ -45,9 +45,9 @@ const InterviewCard = async ({
 
   const badgeColor =
     {
-      Behavioral: "bg-gray-700",
-      Mixed: "bg-gray-800",
-      Technical: "bg-primary-200",
+      Behavioral: "bg-gray-900",
+      Mixed: "bg-gray-700",
+      Technical: "bg-gray-800",
     }[normalizedType] || "bg-light-600";
 
   const formattedDate = dayjs(
@@ -55,7 +55,7 @@ const InterviewCard = async ({
   ).format("MMM D, YYYY");
 
   return (
-    <div className="card-border w-[360px] max-sm:w-full min-h-96">
+    <div className="card-border w-[360px] max-sm:w-full">
       <div className="card-interview">
         <div>
           {/* Type Badge */}
@@ -69,13 +69,13 @@ const InterviewCard = async ({
           </div>
 
           {/* Cover Image */}
-          <Image
+          {/* <Image
             src={getRandomInterviewCover()}
             alt="cover-image"
             width={90}
             height={90}
             className="rounded-full object-fit size-[90px]"
-          />
+          /> */}
 
           {/* Interview Role */}
           <h3 className="mt-5 capitalize">{role} Interview</h3>

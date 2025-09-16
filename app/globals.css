@@ -802,7 +802,7 @@
 }
 
 @utility border-gradient {
-  @apply bg-gradient-to-b from-[#3E3D3A] to-[#3E3D3A33];
+  @apply bg-gradient-to-b from-[#1F2937] to-[#1F293733];
 }
 
 @utility pattern {
