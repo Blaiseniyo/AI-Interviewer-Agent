@@ -40,7 +40,7 @@ export class EmailService {
     async sendEmail(options: EmailOptions): Promise<boolean> {
         try {
             const emailDefaults = {
-                from: `"AI Mock Interviews" <${process.env.EMAIL_USER}>`,
+                from: `"AI Interviews" <${process.env.EMAIL_USER}>`,
             };
 
             const info = await this.transporter.sendMail({

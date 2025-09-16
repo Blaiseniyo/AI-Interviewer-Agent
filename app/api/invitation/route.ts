@@ -40,7 +40,7 @@ async function sendInvitationEmail({
         // Send the email using our email service
         const emailSent = await emailService.sendEmail({
             to: recipientEmail,
-            subject: `Mock Interview Invitation from ${senderName}`,
+            subject: `Interview Invitation from ${senderName}`,
             html: htmlContent,
         });
 
@@ -127,7 +127,7 @@ export const POST = withAdminAuthHandler(async (request: Request, user: User) =>
             interviewId,
             senderId: user.id,
             recipientId: recipientUser.id,
-            status: "sent",
+            status: "pending",
             deadline: deadline,
             createdAt: new Date().toISOString(),
             invitationToken: generateInvitationToken(),

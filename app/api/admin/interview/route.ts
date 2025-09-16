@@ -1,26 +1,15 @@
 import { db } from "@/firebase/admin";
 // import { getRandomInterviewCover } from "@/lib/utils";
 import { getCurrentUser, verificationUserSession } from "@/lib/actions/auth.action";
+import { withAdminAuthHandler } from "@/lib/middleware/auth.middleware";
 
-export async function POST(request: Request) {
+export const POST = withAdminAuthHandler(async (request: Request, user: User) => {
     try {
-        // Get current user to check if they have admin role
-        const authHeader = request.headers.get("Authorization");
-        const token = authHeader?.split(" ")[1] as string;
 
-        const user = await verificationUserSession(token);
-
-        if (!user || user.role !== "admin") {
-            return Response.json({
-                success: false,
-                error: "Unauthorized. Admin access required."
-            }, { status: 403 });
-        }
-
-        const { type, role, level, questions, rubric } = await request.json();
+        const { type, role, level, questions, rubricText } = await request.json();
 
         // Validate required fields
-        if (!type || !role || !level || !questions || !rubric) {
+        if (!type || !role || !level || !questions || !rubricText) {
             return Response.json({
                 success: false,
                 error: "Missing required fields"
@@ -31,10 +20,10 @@ export async function POST(request: Request) {
             role: role,
             type: type,
             level: level,
-            questions: JSON.parse(questions),
+            questions: questions,
             createdBy: user.id,
             coverImage: "",
-            rubric: rubric,
+            rubric: rubricText,
             createdAt: new Date().toISOString(),
             isAdminCreated: true
         };
@@ -53,6 +42,7 @@ export async function POST(request: Request) {
         }, { status: 500 });
     }
 }
+);
 
 export async function GET(request: Request) {
     try {

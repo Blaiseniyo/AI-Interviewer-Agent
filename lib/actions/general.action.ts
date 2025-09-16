@@ -8,7 +8,19 @@ import { feedbackSchema } from "@/constants";
 import { where } from "firebase/firestore";
 
 export async function createFeedback(params: CreateFeedbackParams) {
-  const { interviewId, userId, transcript, feedbackId } = params;
+  const { interviewId, userId, transcript, feedbackId, rubric } = params;
+
+  const defaultRubric = `
+        - **Communication Skills**: Clarity, articulation, structured responses.
+        - **Technical Knowledge**: Understanding of key concepts for the role.
+        - **Problem-Solving**: Ability to analyze problems and propose solutions.
+        - **Cultural & Role Fit**: Alignment with company values and job role.
+        - **Confidence & Clarity**: Confidence in responses, engagement, and clarity.
+  `;
+
+  const interviewRubric = rubric || defaultRubric;
+
+  console.log("Using rubric:", interviewRubric);
 
   try {
     const formattedTranscript = transcript
@@ -22,27 +34,25 @@ export async function createFeedback(params: CreateFeedbackParams) {
     const { text } = await import("ai").then(module => module.generateText({
       model: google("gemini-2.0-flash-001"),
       prompt: `
-        You are an AI interviewer analyzing a mock interview. Your task is to evaluate the candidate based on structured categories. Be thorough and detailed in your analysis. Don't be lenient with the candidate. If there are mistakes or areas for improvement, point them out.
+        You are an AI interviewer analyzing an interview. Your task is to evaluate the candidate based on structured categories. Be thorough and detailed in your analysis. Don't be lenient with the candidate. If there are mistakes or areas for improvement, point them out.
         
         Transcript:
         ${formattedTranscript}
 
         Please score the candidate from 0 to 100 in the following areas. Do not add categories other than the ones provided:
-        - **Communication Skills**: Clarity, articulation, structured responses.
-        - **Technical Knowledge**: Understanding of key concepts for the role.
-        - **Problem-Solving**: Ability to analyze problems and propose solutions.
-        - **Cultural & Role Fit**: Alignment with company values and job role.
-        - **Confidence & Clarity**: Confidence in responses, engagement, and clarity.
+        ${interviewRubric}
+        
+        Calculate the totalScore as a weighted average of the category scores.
         
         Provide your response in JSON format, with the following structure exactly:
         {
           "totalScore": number,
           "categoryScores": [
-            {"name": "Communication Skills", "score": number, "comment": "string"},
-            {"name": "Technical Knowledge", "score": number, "comment": "string"},
-            {"name": "Problem Solving", "score": number, "comment": "string"},
-            {"name": "Cultural Fit", "score": number, "comment": "string"},
-            {"name": "Confidence and Clarity", "score": number, "comment": "string"}
+            {"name": "area_name_1", "score": number, "comment": "string"},
+            {"name": "area_name_2", "score": number, "comment": "string"},
+            {"name": "area_name_3", "score": number, "comment": "string"},
+            {"name": "area_name_4", "score": number, "comment": "string"},
+            {"name": "area_name_5", "score": number, "comment": "string"}
           ],
           "strengths": ["string1", "string2", "string3"],
           "areasForImprovement": ["string1", "string2", "string3"],
@@ -52,7 +62,7 @@ export async function createFeedback(params: CreateFeedbackParams) {
         Make sure your response is valid JSON that can be parsed with JSON.parse().
         `,
       system:
-        "You are a professional interviewer analyzing a mock interview. Your task is to evaluate the candidate based on structured categories",
+        "You are a professional interviewer analyzing an interview. Your task is to evaluate the candidate based on structured categories",
     }));
 
     // Use try-catch to handle JSON parsing errors
@@ -320,15 +330,15 @@ export async function getCandidatesByInterviewId(
   interviewId: string
 ): Promise<any[]> {
   try {
-    const feedbackSnapshot = await db
-      .collection("feedback")
+    const interviewInvitations = await db
+      .collection("invitations")
       .where("interviewId", "==", interviewId)
       .get();
 
-    if (feedbackSnapshot.empty) return [];
+    if (interviewInvitations.empty) return [];
 
     const userIds = [
-      ...new Set(feedbackSnapshot.docs.map((doc) => doc.data().userId)),
+      ...new Set(interviewInvitations.docs.map((doc) => doc.data().recipientId)),
     ];
 
     const candidates = await Promise.all(
@@ -336,17 +346,17 @@ export async function getCandidatesByInterviewId(
         const userDoc = await db.collection("users").doc(userId).get();
         const userData = userDoc.data();
 
-        const userFeedback = feedbackSnapshot.docs.find(
-          (doc) => doc.data().userId === userId
+        const userInvitation = interviewInvitations.docs.find(
+          (doc) => doc.data().recipientId === userId
         );
 
         return {
           id: userId,
           name: userData?.name || "Unknown",
           email: userData?.email || "No email",
-          status: "completed",
-          score: userFeedback?.data()?.totalScore || 0,
-          completedAt: userFeedback?.data()?.createdAt || null,
+          status: userInvitation?.data()?.status || "pending",
+          score: userInvitation?.data()?.totalScore || 0,
+          completedAt: userInvitation?.data()?.createdAt || null,
         };
       })
     );

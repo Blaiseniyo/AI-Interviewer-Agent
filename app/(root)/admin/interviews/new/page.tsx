@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { ArrowLeft, Plus, X, Upload, FileText } from "lucide-react";
 
 import { interviewFormSchema, INTERVIEW_TYPES, EXPERIENCE_LEVELS } from "@/public/types/validations";
+import { apiPost } from "@/lib/api.clients";
 
 type InterviewFormData = z.infer<typeof interviewFormSchema>;
 
@@ -82,8 +83,12 @@ const CreateInterview = () => {
         selectedFile: selectedFile?.name,
       };
 
-      console.log("Creating interview:", interviewData);
-      router.push("/admin");
+      const createdInterview: any = await apiPost("/api/admin/interview", interviewData);
+
+      console.log("Created interview:", createdInterview.data);
+
+      router.push(`/admin/interviews/${createdInterview.data.id}`);
+
     } catch (error) {
       console.error("Error creating interview:", error);
     } finally {

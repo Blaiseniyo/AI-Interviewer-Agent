@@ -113,7 +113,7 @@ export function confirmationEmailTemplate(props: {
     </div>
     <div class="content">
       <p>Hello ${props.recipientName},</p>
-      <p>Your mock interview has been successfully scheduled for <strong>${props.interviewDate}</strong>.</p>
+      <p>Your interview has been successfully scheduled for <strong>${props.interviewDate}</strong>.</p>
       <p>Interview type: <strong>${props.interviewType}</strong></p>
       <p>Your confirmation code is: <strong>${props.confirmationCode}</strong></p>
       <p>Please keep this information for your records.</p>
@@ -122,7 +122,7 @@ export function confirmationEmailTemplate(props: {
       </div>
     </div>
     <div class="footer">
-      <p>This is an automated email from AI Mock Interviews. Please do not reply to this email.</p>
+      <p>This is an automated email from AI Interviews. Please do not reply to this email.</p>
     </div>
   `;
 
@@ -143,7 +143,7 @@ export function feedbackEmailTemplate(props: {
     </div>
     <div class="content">
       <p>Hello ${props.recipientName},</p>
-      <p>Your feedback for the <strong>${props.interviewRole}</strong> mock interview is now available.</p>
+      <p>Your feedback for the <strong>${props.interviewRole}</strong> interview is now available.</p>
       <p>Overall Score: <strong>${props.overallScore}/100</strong></p>
       <p>Click the button below to view your detailed feedback:</p>
       <div style="text-align: center;">
@@ -152,7 +152,7 @@ export function feedbackEmailTemplate(props: {
       <p>Use this feedback to improve your interview skills for future opportunities.</p>
     </div>
     <div class="footer">
-      <p>This is an automated email from AI Mock Interviews. Please do not reply to this email.</p>
+      <p>This is an automated email from AI Interviews. Please do not reply to this email.</p>
     </div>
   `;
 
