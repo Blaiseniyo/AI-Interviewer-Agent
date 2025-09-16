@@ -15,13 +15,15 @@ type InterviewPageProps = {
 };
 
 async function InterviewPage({ params }: InterviewPageProps) {
-  const interview = await getInterviewById(params.id);
+  const resolvedParams = await params;
+  const interviewId = resolvedParams.id;
+  const interview = await getInterviewById(interviewId);
 
   if (!interview) {
     notFound();
   }
 
-  const candidates = await getCandidatesByInterviewId(params.id);
+  const candidates = await getCandidatesByInterviewId(interviewId);
 
   return (
     <div className="w-full">
@@ -99,7 +101,7 @@ async function InterviewPage({ params }: InterviewPageProps) {
 
       <InterviewCandidatesDetails
         candidates={candidates}
-        interviewId={params.id}
+        interviewId={interviewId}
         interviewRole={interview.role}
       />
     </div>

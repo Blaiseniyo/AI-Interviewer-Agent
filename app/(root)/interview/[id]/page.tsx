@@ -99,6 +99,8 @@ const InterviewDetails = async ({ params, searchParams }: RouteParams) => {
         interviewId={id}
         type="interview"
         questions={interview.questions}
+        rubric={interview.rubric}
+        invitationId={userInvitation?.id}
       />
     </>
   );

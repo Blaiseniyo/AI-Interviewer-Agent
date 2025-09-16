@@ -34,6 +34,7 @@ interface CreateFeedbackParams {
   userId: string;
   transcript: { role: string; content: string }[];
   feedbackId?: string;
+  rubric?: string;
 }
 
 interface ChatMessage {
@@ -86,6 +87,8 @@ interface AgentProps {
   feedbackId?: string;
   type: "generate" | "interview";
   questions?: string[];
+  rubric?: string;
+  invitationId?: string;
 }
 
 interface RouteParams {

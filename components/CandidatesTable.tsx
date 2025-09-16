@@ -85,10 +85,12 @@ const CandidatesTable = ({ candidates, interviewId }: CandidatesTableProps) => {
                   <Button
                     asChild
                     size="sm"
+                    disabled={candidate.status !== "completed"}
+                    // disabled={true}
                     className="bg-primary-200 hover:bg-primary-200/80 text-dark-100"
                   >
                     <Link
-                      href={`/admin/interviews/${interviewId}/feedback/${candidate.id}`}
+                      href={`${candidate.status !== "completed" ? "#" : `/admin/interviews/${interviewId}/feedback/${candidate.id}`}`}
                     >
                       <Eye className="w-4 h-4 mr-2" />
                       View Feedback

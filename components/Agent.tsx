@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { vapi } from "@/lib/vapi.sdk";
 import { interviewer } from "@/constants";
 import { createFeedback } from "@/lib/actions/general.action";
+import { updateInvitationStatus } from "@/lib/actions/interviewInvitation.action";
 // import { saveChatMessage } from "@/lib/actions/interviewTranscript.action";
 
 enum CallStatus {
@@ -29,6 +30,8 @@ const Agent = ({
   feedbackId,
   type,
   questions,
+  rubric,
+  invitationId
 }: AgentProps) => {
   const router = useRouter();
   const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.INACTIVE);
@@ -89,16 +92,19 @@ const Agent = ({
     }
 
     const handleGenerateFeedback = async (messages: SavedMessage[]) => {
-      console.log("handleGenerateFeedback");
 
       const { success, feedbackId: id } = await createFeedback({
         interviewId: interviewId!,
         userId: userId!,
         transcript: messages,
         feedbackId,
+        rubric
       });
 
-      if (success && id) {
+      if (success && id && interviewId) {
+        const invitationUpdated = await updateInvitationStatus(invitationId!, 'completed');
+        router.push(`/interview/${interviewId}/feedback`);
+      } else if (success && id) {
         router.push(`/interview/${interviewId}/feedback`);
       } else {
         console.log("Error saving feedback");
@@ -114,7 +120,7 @@ const Agent = ({
       }
     }
   }, [messages, callStatus, feedbackId, interviewId, router, type, userId]);
-  
+
   const handleCall = async () => {
     setCallStatus(CallStatus.CONNECTING);
 

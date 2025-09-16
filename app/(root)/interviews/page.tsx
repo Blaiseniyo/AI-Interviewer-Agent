@@ -11,7 +11,7 @@ import InterviewCard from '@/components/InterviewCard'
 
 const page = async () => {
   const user = await getCurrentUser()
-  console.log(user?.id)
+
   const getInvitations = async (): Promise<{ id: string; interview: Interview }[]> => {
     try {
       const res = await apiGet<{ success: boolean; data: { id: string; interview: Interview }[] }>(

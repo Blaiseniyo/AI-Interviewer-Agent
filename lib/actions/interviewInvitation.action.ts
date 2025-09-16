@@ -42,3 +42,13 @@ export async function getUserInvitation(interviewId: string, userId: string): Pr
         return null;
     }
 }
+
+export async function updateInvitationStatus(invitationId: string, status: 'pending' | 'completed'): Promise<boolean> {
+    try {
+        await db.collection("invitations").doc(invitationId).update({ status });
+        return true;
+    } catch (error) {
+        console.error("Error updating invitation status:", error);
+        return false;
+    }
+}
