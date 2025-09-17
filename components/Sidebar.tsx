@@ -41,7 +41,7 @@ const Sidebar = () => {
           <Image
             src={isCollapsed ? "/amali-logo.png" : "/Logo-AmaliTech.svg"}
             alt="AI Interviewer"
-            className={`${isCollapsed ? 'h-6 w-6' : 'h-8 w-auto'}`}
+            className={`${isCollapsed ? 'h-10 w-auto' : 'h-8 w-auto'}`}
             width={isCollapsed ? 24 : 120}
             height={isCollapsed ? 24 : 120}
           />

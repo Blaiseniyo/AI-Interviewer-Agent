@@ -39,3 +39,19 @@ export enum UserRole {
   USER = "user",
   ADMIN = "admin",
 }
+
+export const editSchema = z.object({
+  role: z.string().optional(),
+  type: z
+    .union([z.enum(["Technical", "Non-Technical", "Mixed"]), z.literal("")])
+    .optional()
+    .transform((v) => (v === "" ? undefined : v)),
+  level: z
+    .union([z.enum(["Entry", "Mid", "Senior"]), z.literal("")])
+    .optional()
+    .transform((v) => (v === "" ? undefined : v)),
+  techStack: z.string().optional(),
+  rubricText: z.string().optional(),
+});
+
+export type EditFormData = z.infer<typeof editSchema>;

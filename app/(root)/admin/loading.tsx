@@ -1,5 +1,8 @@
-import AdminLoading from "@/components/AdminLoading";
 
-export default function Loading() {
-  return <AdminLoading />;
-}
+import { Loader2 } from "lucide-react";
+
+const Loading = () =>( <div className="flex justify-center items-center h-screen">
+  <Loader2 className="w-10 h-10 animate-spin" />
+</div>)
+
+export default Loading

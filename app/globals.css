@@ -190,7 +190,7 @@
     @apply w-fit !bg-primary-200 !text-white hover:!bg-light-800/80 !rounded-full !font-bold px-5 cursor-pointer min-h-10;
   }
   .btn-secondary {
-    @apply w-fit !bg-dark-200 !text-light-100 hover:!bg-dark-200/80 !rounded-full !font-bold px-5 cursor-pointer min-h-10;
+    @apply w-fit !bg-dark-400 !text-gray-300 hover:!bg-dark-200/80 !rounded-full !font-bold px-5 cursor-pointer min-h-10;
   }
 
   .btn-upload {
@@ -659,7 +659,7 @@
   }
 
   .form-select {
-    @apply w-full bg-dark-300 border border-light-600/30 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-accent-100;
+    @apply w-full bg-dark-300 border border-light-600/30 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-0 focus:ring-transparent;
   }
 
   .form-textarea {

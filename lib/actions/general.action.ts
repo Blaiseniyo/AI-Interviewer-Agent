@@ -362,3 +362,25 @@ export async function getCandidatesByInterviewId(
     return [];
   }
 }
+
+export const updateInterview = async (
+  interviewId: string,
+  interview: Partial<Record<string, unknown>>
+) => {
+  try {
+    const payload = Object.fromEntries(
+      Object.entries(interview || {}).filter(([, v]) => v !== undefined)
+    );
+    if (Object.keys(payload).length === 0) {
+      return { success: false, message: "No changes provided" };
+    }
+    payload.updatedAt = new Date().toISOString();
+
+    const updatedInterview = await db.collection("interviews").doc(interviewId).update(payload);
+    return {success: true, updatedInterview};
+  } catch (error: any) {
+    console.error("Error updating interview:", error);
+    return { success: false, message: error?.message || "Update failed" };
+  }
+};
+

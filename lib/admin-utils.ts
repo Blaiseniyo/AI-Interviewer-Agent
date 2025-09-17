@@ -1,12 +1,6 @@
 // import { Interview } from "@/public/types";
 import dayjs from "dayjs";
-import {
-  Book,
-  ClipboardPen,
-  LayoutDashboard,
-  List,
-  Users,
-} from "lucide-react";
+import { Book, ClipboardPen, LayoutDashboard, List } from "lucide-react";
 
 export interface FilterState {
   role: string;
@@ -64,7 +58,7 @@ export const adminNavigationItems = [
     href: "/interviews",
     icon: ClipboardPen,
     isActive: false,
-  },  
+  },
   {
     name: "Mock Interviews",
     href: "/mock-interviews",

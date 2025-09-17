@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft, Plus, X, Upload, FileText } from "lucide-react";
 
-import { interviewFormSchema } from "@/public/types/validations";
+import { interviewFormSchema, INTERVIEW_TYPES, EXPERIENCE_LEVELS } from "@/public/types/validations";
 
 type InterviewFormData = z.infer<typeof interviewFormSchema>;
 
@@ -132,23 +132,19 @@ const CreateInterview = () => {
                 <Label htmlFor="type">Interview Type</Label>
                 <select id="type" className="form-select" {...register("type")}>
                   <option value="">Select interview type</option>
-                  <option value="Technical">Technical</option>
-                  <option value="Non-Technical">Non-Technical</option>
-                  <option value="Mixed">Mixed</option>
+                  {INTERVIEW_TYPES.map((t) => (
+                    <option key={t.value} value={t.value}>{t.label}</option>
+                  ))}
                 </select>
               </div>
 
               <div className="form-group">
                 <Label htmlFor="level">Experience Level</Label>
-                <select
-                  id="level"
-                  className="form-select"
-                  {...register("level")}
-                >
+                <select id="level" className="form-select" {...register("level")}>
                   <option value="">Select experience level</option>
-                  <option value="Entry">Entry Level</option>
-                  <option value="Mid">Mid Level</option>
-                  <option value="Senior">Senior Level</option>
+                  {EXPERIENCE_LEVELS.map((l) => (
+                    <option key={l.value} value={l.value}>{l.label}</option>
+                  ))}
                 </select>
               </div>
 

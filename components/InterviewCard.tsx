@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Button } from "./ui/button";
 import DisplayTechIcons from "./DisplayTechIcons";
 
-import { cn, getRandomInterviewCover } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { getUserById } from "@/lib/actions/auth.action";
 import { getFeedbackByInterviewId } from "@/lib/actions/general.action";
 
@@ -99,21 +99,26 @@ const InterviewCard = async ({
               <p>{formattedDate}</p>
             </div>
 
-            <div className="flex flex-row gap-2 items-center">
+           {!isAdmin && <div className="flex flex-row gap-2 items-center">
               <Image src="/star.svg" width={22} height={22} alt="star" />
               <p>{feedback?.totalScore || "---"}/100</p>
-            </div>
+            </div>}
           </div>
 
           {/* Feedback or Placeholder Text */}
           <p className="line-clamp-2 mt-5">
-            {feedback?.finalAssessment ||
+            {isAdmin ? "View more details and invite canditates to take the interview" : feedback?.finalAssessment ||
               "You haven't taken this interview yet. Take it now to improve your skills."}
           </p>
         </div>
 
         <div className="flex flex-row justify-between">
           <DisplayTechIcons techStack={techstack} />
+          {isAdmin && (
+            <Button className="btn-secondary">
+              <Link href={`/admin/interviews/${interviewId}/edit`}>Edit Interview</Link>
+            </Button>
+          )}
 
           <Button className="btn-primary">
             <Link
@@ -134,7 +139,7 @@ const InterviewCard = async ({
           </Button>
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 
