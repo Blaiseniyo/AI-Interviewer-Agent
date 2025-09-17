@@ -35,6 +35,8 @@ interface CreateFeedbackParams {
   transcript: { role: string; content: string }[];
   feedbackId?: string;
   rubric?: string;
+  interviewInvitationId?: string;
+  isMockInterview?: boolean;
 }
 
 interface ChatMessage {
@@ -89,6 +91,7 @@ interface AgentProps {
   questions?: string[];
   rubric?: string;
   invitationId?: string;
+  isMockInterview?: boolean;
 }
 
 interface RouteParams {
@@ -142,6 +145,16 @@ interface SendInvitationEmailParams {
   interviewLevel: string;
 }
 
+interface Candidate {
+  id: string;
+  name: string;
+  email: string;
+  status: string;
+  score: number | null;
+  completedAt: string | null;
+  invitationId: string;
+}
+
 interface InterviewDetailsProps {
   candidates: Candidate[];
   interviewId: string;
@@ -149,18 +162,18 @@ interface InterviewDetailsProps {
 }
 
 interface ChatMessage {
-    id: string;
-    content: string;
-    senderType: 'user' | 'assistant';
-    timestamp?: string;
+  id: string;
+  content: string;
+  senderType: 'user' | 'assistant';
+  timestamp?: string;
 }
 
 interface InterviewTranscriptProps {
-    interviewId: string;
-    userId: string;
-    user?: { name: string };
-    compact?: boolean;
-    fullPage?: boolean;
-    previewMode?: boolean;
-    maxPreviewMessages?: number;
+  interviewId: string;
+  userId: string;
+  user?: { name: string };
+  compact?: boolean;
+  fullPage?: boolean;
+  previewMode?: boolean;
+  maxPreviewMessages?: number;
 }

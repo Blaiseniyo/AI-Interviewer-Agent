@@ -7,8 +7,12 @@ import { db } from "@/firebase/admin";
 import { feedbackSchema } from "@/constants";
 import { where } from "firebase/firestore";
 
+import { saveChatMessage } from "@/lib/actions/interviewTranscript.action";
+
+// import { updateInvitationStatus } from "@/lib/actions/interviewInvitation.action";
+
 export async function createFeedback(params: CreateFeedbackParams) {
-  const { interviewId, userId, transcript, feedbackId, rubric } = params;
+  const { interviewId, userId, transcript, feedbackId, rubric, interviewInvitationId, isMockInterview } = params;
 
   const defaultRubric = `
         - **Communication Skills**: Clarity, articulation, structured responses.
@@ -58,6 +62,7 @@ export async function createFeedback(params: CreateFeedbackParams) {
           "areasForImprovement": ["string1", "string2", "string3"],
           "finalAssessment": "string"
         }
+        Note: Please ensure that all category names and comments are relevant to the specific interview and candidate being evaluated. Category names should match those provided in the rubric.
 
         Make sure your response is valid JSON that can be parsed with JSON.parse().
         `,
@@ -71,33 +76,64 @@ export async function createFeedback(params: CreateFeedbackParams) {
       // Clean up the text to ensure it's valid JSON
       const cleanedText = text.trim().replace(/^```json|```$/g, '').trim();
       object = JSON.parse(cleanedText);
+
+      console.log("Parsed feedback object:", object);
+
     } catch (error) {
       console.error("JSON parsing error:", error);
       console.error("Raw text received:", text);
       throw new Error("Failed to parse feedback response");
     }
 
-    const feedback = {
-      interviewId: interviewId,
-      userId: userId,
-      totalScore: object.totalScore,
-      categoryScores: object.categoryScores,
-      strengths: object.strengths,
-      areasForImprovement: object.areasForImprovement,
-      finalAssessment: object.finalAssessment,
-      createdAt: new Date().toISOString(),
-    };
+    let feedback;
+    if (isMockInterview) {
+      console.log("Creating mock interview feedback...");
+      feedback = {
+        interviewId: interviewId,
+        userId: userId,
+        totalScore: object.totalScore,
+        categoryScores: object.categoryScores,
+        strengths: object.strengths,
+        areasForImprovement: object.areasForImprovement,
+        finalAssessment: object.finalAssessment,
+        createdAt: new Date().toISOString(),
+      };
+    } else if (interviewInvitationId) {
+      console.log("Creating feedback for interview invitation ID:", interviewInvitationId);
+      feedback = {
+        interviewId: interviewInvitationId,
+        userId: userId,
+        totalScore: object.totalScore,
+        categoryScores: object.categoryScores,
+        strengths: object.strengths,
+        areasForImprovement: object.areasForImprovement,
+        finalAssessment: object.finalAssessment,
+        createdAt: new Date().toISOString(),
+      };
+    }
+    else {
+      return { success: false, error: "Invalid parameters" };
+    }
+
+
+    console.log("Final feedback object to be saved:", feedback);
 
     let feedbackRef;
 
+
+    // Determine which collection to use based on isMockInterview flag
+    const collectionName = isMockInterview ? "mockInterviewFeedback" : "feedback";
+
     if (feedbackId) {
-      feedbackRef = db.collection("feedback").doc(feedbackId);
+      feedbackRef = db.collection(collectionName).doc(feedbackId);
     } else {
-      feedbackRef = db.collection("feedback").doc();
+      feedbackRef = db.collection(collectionName).doc();
     }
 
-    await feedbackRef.set(feedback);
 
+
+    await feedbackRef.set(feedback);
+    await saveChatMessage(interviewId, userId, "assistant", JSON.stringify(feedback));
     return { success: true, feedbackId: feedbackRef.id };
   } catch (error) {
     console.error("Error saving feedback:", error);
@@ -357,6 +393,7 @@ export async function getCandidatesByInterviewId(
           status: userInvitation?.data()?.status || "pending",
           score: userInvitation?.data()?.totalScore || 0,
           completedAt: userInvitation?.data()?.createdAt || null,
+          invitationId: userInvitation?.id || null,
         };
       })
     );

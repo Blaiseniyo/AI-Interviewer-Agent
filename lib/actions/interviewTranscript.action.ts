@@ -3,6 +3,33 @@
 import { db } from "@/firebase/admin";
 // import { getUserSession } from "./auth.action";
 
+// export async function saveChatMessage(
+//     interviewId: string,
+//     senderId: string,
+//     senderType: 'user' | 'assistant',
+//     content: string
+// ): Promise<ChatMessage | null> {
+//     try {
+//         const message = {
+//             interviewId,
+//             senderId,
+//             senderType,
+//             content,
+//             timestamp: new Date().toISOString(),
+//         };
+
+//         const docRef = await db.collection("interviewTranscription").add(message);
+
+//         return {
+//             id: docRef.id,
+//             ...message,
+//         } as ChatMessage;
+//     } catch (error) {
+//         console.error("Error saving chat message:", error);
+//         return null;
+//     }
+// }
+
 export async function saveChatMessage(
     interviewId: string,
     senderId: string,
