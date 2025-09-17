@@ -64,6 +64,7 @@ const Agent = ({
           userId!,
           message.role === "user" ? "user" : "assistant",
           message.transcript,
+          isMockInterview
         );
         setMessages((prev) => [...prev, newMessage]);
       }

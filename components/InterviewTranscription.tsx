@@ -13,7 +13,8 @@ const InterviewTranscript = ({
     compact = false,
     fullPage = false,
     previewMode = false,
-    maxPreviewMessages = 6
+    maxPreviewMessages = 6,
+    isMockInterview = false
 }: InterviewTranscriptProps) => {
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [loading, setLoading] = useState(true);
@@ -24,7 +25,7 @@ const InterviewTranscript = ({
         const fetchMessages = async () => {
             try {
                 setLoading(true);
-                const fetchedMessages = await getChatMessagesByInterviewId(interviewId);
+                const fetchedMessages = await getChatMessagesByInterviewId(interviewId, isMockInterview);
                 if (fetchedMessages) {
                     setMessages(fetchedMessages);
                 }

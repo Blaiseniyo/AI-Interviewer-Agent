@@ -34,9 +34,11 @@ export async function saveChatMessage(
     interviewId: string,
     senderId: string,
     senderType: 'user' | 'assistant',
-    content: string
+    content: string,
+    isMockInterview: boolean = false
 ): Promise<ChatMessage | null> {
     try {
+
         const message = {
             interviewId,
             senderId,
@@ -45,7 +47,9 @@ export async function saveChatMessage(
             timestamp: new Date().toISOString(),
         };
 
-        const docRef = await db.collection("interviewTranscription").add(message);
+        const collectionName = isMockInterview ? "mockInterviewTranscription" : "interviewTranscription";
+
+        const docRef = await db.collection(collectionName).add(message);
 
         return {
             id: docRef.id,
@@ -57,14 +61,47 @@ export async function saveChatMessage(
     }
 }
 
+
+export async function deleteChatMessagesByInterviewId(
+    interviewId: string, userId: string, isMockInterview: boolean = false
+): Promise<{ success: boolean; message: string }> {
+    try {
+
+        const collectionName = isMockInterview ? "mockInterviewTranscription" : "interviewTranscription";
+
+        const querySnapshot = await db
+            .collection(collectionName)
+            .where("interviewId", "==", interviewId)
+            .where("senderId", "==", userId)
+            .get();
+
+        if (querySnapshot.empty) {
+            return { success: true, message: "No messages to delete." };
+        }
+
+        const batch = db.batch();
+        querySnapshot.docs.forEach((doc) => {
+            batch.delete(doc.ref);
+        });
+
+        await batch.commit();
+
+        return { success: true, message: "Messages deleted successfully." };
+    } catch (error) {
+        console.error("Error deleting chat messages:", error);
+        return { success: false, message: "Error deleting messages." };
+    }
+}
+
 export async function getChatMessagesByInterviewId(
-    interviewId: string
+    interviewId: string, isMockInterview: boolean = false
 ): Promise<ChatMessage[] | null> {
     try {
-        // Modified query to avoid requiring a composite index
-        // We only filter by interviewId and then sort in memory
+
+        const collectionName = isMockInterview ? "mockInterviewTranscription" : "interviewTranscription";
+
         const querySnapshot = await db
-            .collection("interviewTranscription")
+            .collection(collectionName)
             .where("interviewId", "==", interviewId)
             .get();
 

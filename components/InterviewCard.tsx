@@ -18,13 +18,16 @@ const InterviewCard = async ({
   createdAt = '',
   showCandidate,
   isAdmin = false,
+  isMockInterview = false
 }: InterviewCardProps) => {
   let feedback = null;
   try {
+  
     if (userId && interviewId) {
       feedback = await getFeedbackByInterviewId({
         interviewId,
         userId,
+        isMockInterview
       });
     }
   } catch (error) {
@@ -123,18 +126,26 @@ const InterviewCard = async ({
           <Button className="btn-primary">
             <Link
               href={
-                isAdmin
-                  ? `/admin/interviews/${interviewId}`
-                  : feedback
-                    ? `/interview/${interviewId}/feedback`
-                    : `/interview/${interviewId}`
+                isMockInterview && feedback
+                  ? `/mock-interview/${interviewId}/feedback`
+                  : isMockInterview
+                    ? `/mock-interview/${interviewId}`
+                    : isAdmin
+                      ? `/admin/interviews/${interviewId}`
+                      : feedback
+                        ? `/interview/${interviewId}/feedback`
+                        : `/interview/${interviewId}`
               }
             >
-              {isAdmin
-                ? "View Details"
-                : feedback
-                  ? "Check Feedback"
-                  : "View Interview"}
+              {isMockInterview && feedback
+                ? "Check Mock Feedback"
+                : isMockInterview
+                  ? "View Mock Interview"
+                  : isAdmin
+                    ? "View Details"
+                    : feedback
+                      ? "Check Feedback"
+                      : "View Interview"}
             </Link>
           </Button>
         </div>

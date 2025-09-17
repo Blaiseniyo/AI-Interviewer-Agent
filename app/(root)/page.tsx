@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 
 // import { getCurrentUser } from "@/lib/actions/auth.action";
 // import {
-//   getInterviewsByUserId,
+//   getMockInterviewsByUserId,
 //   getLatestInterviews,
 // } from "@/lib/actions/general.action";
 
@@ -14,7 +14,7 @@ async function Home() {
   // const user = await getCurrentUser();
 
   // const [userInterviews, allInterview] = await Promise.all([
-  //   getInterviewsByUserId(user?.id || undefined),
+  //   getMockInterviewsByUserId(user?.id || undefined),
   //   getLatestInterviews({ userId: user?.id || undefined }),
   // ]);
 

@@ -147,13 +147,40 @@ export async function getInterviewById(id: string): Promise<Interview | null> {
   return interview.data() as Interview | null;
 }
 
+export async function getMockInterviewById(id: string): Promise<Interview | null> {
+  const interview = await db.collection("mockInterviews").doc(id).get();
+
+  return interview.data() as Interview | null;
+}
+
 export async function getFeedbackByInterviewId(
+  params: GetFeedbackByInterviewIdParams
+): Promise<Feedback | null> {
+
+  const { interviewId, userId, isMockInterview } = params;
+
+  const collectionName = isMockInterview ? "mockInterviewFeedback" : "feedback";
+
+  const querySnapshot = await db
+    .collection(collectionName)
+    .where("interviewId", "==", interviewId)
+    .where("userId", "==", userId)
+    .limit(1)
+    .get();
+
+  if (querySnapshot.empty) return null;
+
+  const feedbackDoc = querySnapshot.docs[0];
+  return { id: feedbackDoc.id, ...feedbackDoc.data() } as Feedback;
+}
+
+export async function getMockInterviewFeedbackByInterviewId(
   params: GetFeedbackByInterviewIdParams
 ): Promise<Feedback | null> {
   const { interviewId, userId } = params;
 
   const querySnapshot = await db
-    .collection("feedback")
+    .collection("mockInterviewFeedback")
     .where("interviewId", "==", interviewId)
     .where("userId", "==", userId)
     .limit(1)
@@ -193,7 +220,7 @@ export async function getLatestInterviews(
   return filteredInterviews;
 }
 
-export async function getInterviewsByUserId(
+export async function getMockInterviewsByUserId(
   userId?: string
 ): Promise<Interview[]> {
   // If userId is undefined or null, return empty array
@@ -203,7 +230,7 @@ export async function getInterviewsByUserId(
 
   // Simplified query without ordering to avoid index requirement
   const interviews = await db
-    .collection("interviews")
+    .collection("mockInterviews")
     .where("userId", "==", userId)
     .get();
 
