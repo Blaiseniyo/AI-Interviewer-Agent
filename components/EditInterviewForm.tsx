@@ -60,7 +60,7 @@ const EditInterviewForm = ({ interview, onSubmit, backHref = "/admin" }: EditInt
 
             if (onSubmit) await onSubmit(payload);
         } catch (e) {
-            // console.error("Error updating interview:", e);
+            console.error("Error updating interview:", e);
             toast.error("Unexpected error while updating interview");
         } finally {
             setIsSubmitting(false);
