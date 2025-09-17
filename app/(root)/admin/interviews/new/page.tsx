@@ -226,7 +226,7 @@ const CreateInterview = () => {
                     variant={rubricMode === "text" ? "default" : "outline"}
                     size="sm"
                     onClick={() => setRubricMode("text")}
-                    className="mr-2"
+                    className="mr-2 text-gray-300 hover:text-gray-700"
                   >
                     <FileText className="w-4 h-4 mr-2" />
                     Text Editor
