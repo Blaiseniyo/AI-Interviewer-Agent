@@ -80,6 +80,7 @@ interface InterviewCardProps {
   createdAt?: string;
   showCandidate?: boolean;
   isAdmin?: boolean;
+  isMockInterview?: boolean;
 }
 
 interface AgentProps {
@@ -102,6 +103,7 @@ interface RouteParams {
 interface GetFeedbackByInterviewIdParams {
   interviewId: string;
   userId: string;
+  isMockInterview?: boolean;
 }
 
 interface GetLatestInterviewsParams {
@@ -166,6 +168,7 @@ interface ChatMessage {
   content: string;
   senderType: 'user' | 'assistant';
   timestamp?: string;
+  isMockInterview?: boolean;
 }
 
 interface InterviewTranscriptProps {
@@ -176,4 +179,5 @@ interface InterviewTranscriptProps {
   fullPage?: boolean;
   previewMode?: boolean;
   maxPreviewMessages?: number;
+  isMockInterview?: boolean;
 }
