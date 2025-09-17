@@ -1,4 +1,5 @@
 import { db } from "@/firebase/admin";
+import { getInterviewById } from "./general.action";
 
 export async function verifyInvitationToken(interviewId: string, token: string): Promise<Invitation | null> {
     try {
@@ -17,6 +18,25 @@ export async function verifyInvitationToken(interviewId: string, token: string):
         return invitation;
     } catch (error) {
         console.error("Error verifying invitation token:", error);
+        return null;
+    }
+}
+
+export async function getInvitationById(id: string): Promise<Invitation | null> {
+    try {
+        // Find invitation by interviewId
+        const querySnapshot = await db.collection("invitations").doc(id).get();
+
+        if (!querySnapshot.exists) return null;
+
+        const invitation = {
+            id: querySnapshot.id,
+            ...querySnapshot.data()
+        } as Invitation;
+
+        return invitation;
+    } catch (error) {
+        console.error("Error checking user invitation:", error);
         return null;
     }
 }
@@ -45,7 +65,7 @@ export async function getUserInvitation(interviewId: string, userId: string): Pr
 
 export async function updateInvitationStatus(invitationId: string, status: 'pending' | 'completed'): Promise<boolean> {
     try {
-        await db.collection("invitations").doc(invitationId).update({ status });
+        await db.collection("invitations").doc(invitationId).set({ status });
         return true;
     } catch (error) {
         console.error("Error updating invitation status:", error);

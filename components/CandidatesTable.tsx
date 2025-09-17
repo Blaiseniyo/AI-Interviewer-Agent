@@ -3,15 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Eye } from "lucide-react";
 import { getStatusBadge, formatDate } from "@/lib/utils";
 
-interface Candidate {
-  id: string;
-  name: string;
-  email: string;
-  status: string;
-  score: number | null;
-  completedAt: string | null;
-}
-
 interface CandidatesTableProps {
   candidates: Candidate[];
   interviewId: string;
@@ -59,8 +50,8 @@ const CandidatesTable = ({ candidates, interviewId }: CandidatesTableProps) => {
                     {candidate.status === "completed"
                       ? "Completed"
                       : candidate.status === "in_progress"
-                      ? "In Progress"
-                      : "Pending"}
+                        ? "In Progress"
+                        : "Pending"}
                   </span>
                 </td>
                 <td className="px-6 py-4">
@@ -90,7 +81,7 @@ const CandidatesTable = ({ candidates, interviewId }: CandidatesTableProps) => {
                     className="bg-primary-200 hover:bg-primary-200/80 text-dark-100"
                   >
                     <Link
-                      href={`${candidate.status !== "completed" ? "#" : `/admin/interviews/${interviewId}/feedback/${candidate.id}`}`}
+                      href={`${candidate.status !== "completed" ? "#" : `/admin/interviews/${candidate.invitationId}/feedback/${candidate.id}`}`}
                     >
                       <Eye className="w-4 h-4 mr-2" />
                       View Feedback

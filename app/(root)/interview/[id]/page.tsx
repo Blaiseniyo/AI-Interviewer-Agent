@@ -32,6 +32,8 @@ const InterviewDetails = async ({ params, searchParams }: RouteParams) => {
   // Get user's invitation for this interview if it exists
   const userInvitation = await getUserInvitation(id, user.id);
 
+  console.log("User Invitation:", userInvitation);
+  
   // Check if feedback exists for this user and interview
   const feedback = await getFeedbackByInterviewId({
     interviewId: id,
@@ -101,6 +103,7 @@ const InterviewDetails = async ({ params, searchParams }: RouteParams) => {
         questions={interview.questions}
         rubric={interview.rubric}
         invitationId={userInvitation?.id}
+        isMockInterview={false}
       />
     </div>
   );

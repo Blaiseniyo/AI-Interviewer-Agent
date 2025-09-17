@@ -1,6 +1,5 @@
 import { db } from "@/firebase/admin";
-// import { getRandomInterviewCover } from "@/lib/utils";
-import { getCurrentUser, verificationUserSession } from "@/lib/actions/auth.action";
+import { verificationUserSession } from "@/lib/actions/auth.action";
 import { withAdminAuthHandler } from "@/lib/middleware/auth.middleware";
 
 export const POST = withAdminAuthHandler(async (request: Request, user: User) => {

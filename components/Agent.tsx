@@ -8,8 +8,12 @@ import { cn } from "@/lib/utils";
 import { vapi } from "@/lib/vapi.sdk";
 import { interviewer } from "@/constants";
 import { createFeedback } from "@/lib/actions/general.action";
-import { updateInvitationStatus } from "@/lib/actions/interviewInvitation.action";
-// import { saveChatMessage } from "@/lib/actions/interviewTranscript.action";
+
+import { apiPatch } from "@/lib/api.clients";
+
+// import { updateInvitationStatus } from "@/lib/actions/interviewInvitation.action";
+
+import { saveChatMessage } from "@/lib/actions/interviewTranscript.action";
 
 enum CallStatus {
   INACTIVE = "INACTIVE",
@@ -31,8 +35,11 @@ const Agent = ({
   type,
   questions,
   rubric,
-  invitationId
+  invitationId,
+  isMockInterview
 }: AgentProps) => {
+  console.log("interviewInvitationId", invitationId);
+  console.log("isMockInterview", isMockInterview);
   const router = useRouter();
   const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.INACTIVE);
   const [messages, setMessages] = useState<SavedMessage[]>([]);
@@ -51,6 +58,13 @@ const Agent = ({
     const onMessage = (message: Message) => {
       if (message.type === "transcript" && message.transcriptType === "final") {
         const newMessage = { role: message.role, content: message.transcript };
+        const interviewIdToUse = isMockInterview ? interviewId : invitationId;
+        saveChatMessage(
+          interviewIdToUse!,
+          userId!,
+          message.role === "user" ? "user" : "assistant",
+          message.transcript,
+        );
         setMessages((prev) => [...prev, newMessage]);
       }
     };
@@ -93,16 +107,24 @@ const Agent = ({
 
     const handleGenerateFeedback = async (messages: SavedMessage[]) => {
 
+      console.log("Generating feedback...", messages);
+      // console.log("Generating feedback invitationId...:", invitationId);
       const { success, feedbackId: id } = await createFeedback({
         interviewId: interviewId!,
         userId: userId!,
         transcript: messages,
         feedbackId,
-        rubric
+        rubric,
+        interviewInvitationId: invitationId,
+        isMockInterview
       });
 
-      if (success && id && interviewId) {
-        const invitationUpdated = await updateInvitationStatus(invitationId!, 'completed');
+      if (success && id && invitationId && !isMockInterview) {
+
+        const response = await apiPatch(`api/invitation/${invitationId}/status`, { status: "completed" });
+
+        console.log("Invitation update response:", response);
+
         router.push(`/interview/${interviewId}/feedback`);
       } else if (success && id) {
         router.push(`/interview/${interviewId}/feedback`);

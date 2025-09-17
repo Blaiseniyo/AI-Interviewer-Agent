@@ -6,6 +6,7 @@ import { getFeedbackByInterviewId } from "@/lib/actions/general.action";
 import { getUserById } from "@/lib/actions/auth.action";
 import { notFound } from "next/navigation";
 import FeedbackTabs from "@/components/FeedbackTabs";
+import { getInvitationById } from "@/lib/actions/interviewInvitation.action";
 
 type FeedbackPageProps = {
   params: {
@@ -15,12 +16,24 @@ type FeedbackPageProps = {
 };
 
 async function FeedbackPage({ params }: FeedbackPageProps) {
-  const interview = await getInterviewById(params.id);
+
+  const { id, candidateId } = await params;
+
+  const interviewInvitation = await getInvitationById(id);
+
+  if (!interviewInvitation) {
+    notFound();
+  }
+
+  const interview = await getInterviewById(interviewInvitation.interviewId);
+
   const feedback = await getFeedbackByInterviewId({
-    interviewId: params.id,
-    userId: params.candidateId,
+    interviewId: interviewInvitation.id,
+    userId: candidateId,
   });
-  const candidate = await getUserById(params.candidateId);
+
+
+  const candidate = await getUserById(candidateId);
 
   if (!interview || !feedback || !candidate) {
     notFound();
@@ -35,7 +48,7 @@ async function FeedbackPage({ params }: FeedbackPageProps) {
             variant="ghost"
             className="text-light-100 hover:text-white hover:bg-dark-300"
           >
-            <Link href={`/admin/interviews/${params.id}`}>
+            <Link href={`/admin/interviews/${interviewInvitation.interviewId}`}>
               <ArrowLeft className="w-4 h-4 mr-2" />
             </Link>
           </Button>
@@ -53,7 +66,7 @@ async function FeedbackPage({ params }: FeedbackPageProps) {
         interview={interview}
         feedback={feedback}
         candidate={candidate}
-        interviewId={params.id}
+        interviewId={interviewInvitation.id}
       />
     </div>
   );
