@@ -80,6 +80,7 @@ interface InterviewCardProps {
   createdAt?: string;
   showCandidate?: boolean;
   isAdmin?: boolean;
+  isCompleted?: boolean;
   isMockInterview?: boolean;
 }
 

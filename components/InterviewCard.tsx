@@ -18,6 +18,7 @@ const InterviewCard = async ({
   createdAt = '',
   showCandidate,
   isAdmin = false,
+  isCompleted= false,
   isMockInterview = false
 }: InterviewCardProps) => {
   let feedback = null;
@@ -123,31 +124,37 @@ const InterviewCard = async ({
             </Button>
           )}
 
-          <Button className="btn-primary">
-            <Link
-              href={
-                isMockInterview && feedback
-                  ? `/mock-interview/${interviewId}/feedback`
+          {isCompleted ? (
+            <Button className="btn-primary" disabled>
+              Completed
+            </Button>
+          ) : (
+            <Button className="btn-primary">
+              <Link
+                href={
+                  isMockInterview && feedback
+                    ? `/mock-interview/${interviewId}/feedback`
+                    : isMockInterview
+                      ? `/mock-interview/${interviewId}`
+                      : isAdmin
+                        ? `/admin/interviews/${interviewId}`
+                        : feedback
+                          ? `/interview/${interviewId}/feedback`
+                          : `/interview/${interviewId}`
+                }
+              >
+                {isMockInterview && feedback
+                  ? "Check Mock Feedback"
                   : isMockInterview
-                    ? `/mock-interview/${interviewId}`
+                    ? "View Mock Interview"
                     : isAdmin
-                      ? `/admin/interviews/${interviewId}`
+                      ? "View Details"
                       : feedback
-                        ? `/interview/${interviewId}/feedback`
-                        : `/interview/${interviewId}`
-              }
-            >
-              {isMockInterview && feedback
-                ? "Check Mock Feedback"
-                : isMockInterview
-                  ? "View Mock Interview"
-                  : isAdmin
-                    ? "View Details"
-                    : feedback
-                      ? "Check Feedback"
-                      : "View Interview"}
-            </Link>
-          </Button>
+                        ? "Check Feedback"
+                        : "View Interview"}
+              </Link>
+            </Button>
+          )}
         </div>
       </div>
     </div >
