@@ -1,20 +1,17 @@
-// import InterviewCard from '@/components/InterviewCard'
 import Image from 'next/image'
-// import InterviewCard from '@/components/InterviewCard'
 import { Button } from '@/components/ui/button'
 import { getCurrentUser } from '@/lib/actions/auth.action'
 import { Link } from 'lucide-react'
 import { apiGet } from '@/lib/api'
-// import { getAllUserInvitations } from '@/lib/actions/userInvitations.action'
 import React from 'react'
 import InterviewCard from '@/components/InterviewCard'
 
 const page = async () => {
   const user = await getCurrentUser()
 
-  const getInvitations = async (): Promise<{ id: string; interview: Interview }[]> => {
+  const getInvitations = async (): Promise<{ id: string; invitation: Invitation, interview: Interview }[]> => {
     try {
-      const res = await apiGet<{ success: boolean; data: { id: string; interview: Interview }[] }>(
+      const res = await apiGet<{ success: boolean; data: { id: string; invitation: Invitation, interview: Interview }[] }>(
         '/api/user/invitations'
       )
       return res?.data ?? []
@@ -54,7 +51,7 @@ const page = async () => {
         invitations.length > 0 ? (
           <div className='interviews-section'>
             {invitations.map((invitation: any) => (
-              <InterviewCard key={invitation.id} interviewId={invitation.invitation?.interviewId} role={invitation.interview?.role} type={invitation.interview?.type} techstack={invitation.interview?.techstack} createdAt={invitation.interview?.createdAt} />
+              <InterviewCard key={invitation.id} interviewId={invitation.invitation?.interviewId} role={invitation.interview?.role} type={invitation.interview?.type} techstack={invitation.interview?.techstack} createdAt={invitation.interview?.createdAt} isCompleted={invitation.invitation?.status === 'completed'} />
             ))}
           </div>
         ) : (

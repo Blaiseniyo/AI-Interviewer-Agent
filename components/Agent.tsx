@@ -11,8 +11,6 @@ import { createFeedback } from "@/lib/actions/general.action";
 
 import { apiPatch } from "@/lib/api.clients";
 
-// import { updateInvitationStatus } from "@/lib/actions/interviewInvitation.action";
-
 import { saveChatMessage } from "@/lib/actions/interviewTranscript.action";
 
 enum CallStatus {
@@ -38,8 +36,7 @@ const Agent = ({
   invitationId,
   isMockInterview
 }: AgentProps) => {
-  console.log("interviewInvitationId", invitationId);
-  console.log("isMockInterview", isMockInterview);
+
   const router = useRouter();
   const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.INACTIVE);
   const [messages, setMessages] = useState<SavedMessage[]>([]);
@@ -124,11 +121,9 @@ const Agent = ({
 
         const response = await apiPatch(`api/invitation/${invitationId}/status`, { status: "completed" });
 
-        console.log("Invitation update response:", response);
-
-        router.push(`/interview/${interviewId}/feedback`);
-      } else if (success && id) {
-        router.push(`/interview/${interviewId}/feedback`);
+        router.push(`/interviews`);
+      } else if (success && id && isMockInterview) {
+        router.push(`/mock-interview/${interviewId}/feedback`);
       } else {
         console.log("Error saving feedback");
         router.push("/");
@@ -208,7 +203,7 @@ const Agent = ({
                 alt="profile-image"
                 width={539}
                 height={539}
-                // className="rounded-full object-cover size-[120px]"
+              // className="rounded-full object-cover size-[120px]"
               />
             </div>
             <h3>{userName}</h3>
