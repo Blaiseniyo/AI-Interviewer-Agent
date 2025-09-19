@@ -57,7 +57,7 @@ const AdminDashboard = async () => {
         <h2 className="text-2xl font-bold text-white mb-6">
           Previously Created Interviews
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="flex flex-wrap gap-6">
           {interviews.length > 0 ? (
             interviews.slice(0, 4).map((interview) => (
               <InterviewCard
