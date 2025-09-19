@@ -59,7 +59,7 @@ const AdminDashboard = async () => {
         </h2>
         <div className="flex flex-wrap gap-6">
           {interviews.length > 0 ? (
-            interviews.slice(0, 4).map((interview) => (
+            interviews.slice(0, 3).map((interview) => (
               <InterviewCard
                 key={interview.id}
                 interviewId={interview.id}
