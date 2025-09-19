@@ -6,6 +6,7 @@ import Modal from "@/components/ui/Modal";
 import FormField from "@/components/FormFieldInput";
 import InfoBox from "@/components/ui/InfoBox";
 import { useInviteCandidate } from "@/hooks/useInviteCandidate";
+import { IconContainer } from "./ui/IconContainer";
 
 interface InviteCandidateModalProps {
     isOpen: boolean;
@@ -38,7 +39,7 @@ const InviteCandidateModal = ({
             onClose={handleClose}
             title="Invite Candidate"
             description={`Send an interview invitation for: ${interviewRole}`}
-            icon={<UserPlus className="w-5 h-5 text-primary-200" />}
+            icon={<IconContainer icon={UserPlus} />}
             disabled={isSubmitting}
         >
             <form onSubmit={handleSubmit} className="space-y-6">

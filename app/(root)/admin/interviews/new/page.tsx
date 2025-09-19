@@ -233,7 +233,7 @@ const CreateInterview = () => {
                     onClick={() => setRubricMode("text")}
                     className="mr-2"
                   >
-                    <FileText className="w-4 h-4 mr-2" />
+                    <FileText className="w-4 h-4 hover:text-dark-200" />
                     Text Editor
                   </Button>
                   <Button

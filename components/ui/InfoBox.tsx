@@ -14,7 +14,7 @@ const InfoBox = ({
     variant = "info"
 }: InfoBoxProps) => {
     const variantClasses = {
-        info: "bg-primary-200/10 border-primary-200/20 text-primary-200",
+        info: "bg-primary-200/10 border-primary-200/20 text-gray-400",
         success: "bg-green-200/10 border-green-200/20 text-green-200",
         warning: "bg-yellow-200/10 border-yellow-200/20 text-yellow-200",
         error: "bg-red-200/10 border-red-200/20 text-red-200",

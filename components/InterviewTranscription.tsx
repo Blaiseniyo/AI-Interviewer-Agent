@@ -46,7 +46,7 @@ const InterviewTranscript = ({
     if (loading) {
         return (
             <div className="text-center py-4">
-                <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary-200 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
+                <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary-200 border-solid border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
                 <p className="mt-2">Loading conversation history...</p>
             </div>
         );
@@ -124,10 +124,9 @@ const InterviewTranscript = ({
 
             <div className="border-gradient rounded-xl">
                 <div className="dark-gradient rounded-xl p-4">
-                    <div className="flex justify-between items-center mb-4 border-b border-light-400/20 pb-3">
+                    {/* <div className="flex justify-between items-center mb-4 border-b border-light-400/20 pb-3">
                         <h3 className="text-xl font-medium text-primary-200">Interview Conversation</h3>
-                    </div>
-
+                    </div> */}
                     <div className={`chat-messages flex flex-col gap-5 pr-2 ${!fullPage ? 'max-h-[650px] overflow-y-auto' : ''}`}>
                         {displayGroups.map((group, groupIndex) => {
                             const senderType = group[0].senderType;
@@ -158,8 +157,8 @@ const InterviewTranscript = ({
                                             }`}
                                     >
                                         {!isUser && (
-                                            <div className="w-8 h-8 rounded-full bg-primary-200/20 flex items-center justify-center mr-2 self-start">
-                                                <span className="text-xs text-primary-200">AI</span>
+                                            <div className="w-8 h-8 rounded-full bg-primary-200 flex items-center justify-center mr-2 self-start">
+                                                <span className="text-xs text-dark-100">AI</span>
                                             </div>
                                         )}
 

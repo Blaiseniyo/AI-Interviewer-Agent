@@ -1,8 +1,4 @@
-import Image from "next/image";
 import { redirect } from "next/navigation";
-
-import Agent from "@/components/Agent";
-import { getRandomInterviewCover } from "@/lib/utils";
 
 import {
   getFeedbackByInterviewId,
@@ -14,7 +10,7 @@ import {
   verifyInvitationToken
 } from "@/lib/actions/interviewInvitation.action";
 import { getCurrentUser } from "@/lib/actions/auth.action";
-import DisplayTechIcons from "@/components/DisplayTechIcons";
+import InterviewCall from "@/components/InterviewCall";
 
 const InterviewDetails = async ({ params, searchParams }: RouteParams) => {
   const { id } = await params;
@@ -33,7 +29,7 @@ const InterviewDetails = async ({ params, searchParams }: RouteParams) => {
   const userInvitation = await getUserInvitation(id, user.id);
 
   console.log("User Invitation:", userInvitation);
-  
+
   // Check if feedback exists for this user and interview
   const feedback = await getFeedbackByInterviewId({
     interviewId: id,
@@ -73,39 +69,7 @@ const InterviewDetails = async ({ params, searchParams }: RouteParams) => {
   }
 
   return (
-    <div className="grid place-items-center pb-12 min-h-screen">
-      <div className="flex w-full flex-row justify-between">
-        <div className="flex flex-row gap-4 items-center max-sm:flex-col">
-          <div className="flex flex-row gap-4 items-center">
-            <Image
-              src={getRandomInterviewCover()}
-              alt="cover-image"
-              width={40}
-              height={40}
-              className="rounded-full object-cover size-[40px]"
-            />
-            <h3 className="capitalize">{interview.role} Interview</h3>
-          </div>
-
-          <DisplayTechIcons techStack={interview.techstack} />
-        </div>
-
-        <p className="bg-dark-200 px-4 py-2 rounded-lg h-fit">
-          {interview.type}
-        </p>
-      </div>
-
-      <Agent
-        userName={user?.name!}
-        userId={user?.id}
-        interviewId={id}
-        type="interview"
-        questions={interview.questions}
-        rubric={interview.rubric}
-        invitationId={userInvitation?.id}
-        isMockInterview={false}
-      />
-    </div>
+    <InterviewCall interview={interview} interviewId={id} user={user} userInvitation={userInvitation!} />
   );
 };
 

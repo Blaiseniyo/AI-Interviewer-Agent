@@ -106,21 +106,21 @@ const Feedback = async ({ params }: RouteParams) => {
         <InterviewTranscript interviewId={id} userId={user?.id!} compact={true} isMockInterview={true} />
       </div>
 
-      <div className="buttons mt-8">
-        <Button className="btn-secondary flex-1">
+      <div className="mt-8 mx-auto">
+        {/* <Button className="btn-secondary flex-1">
           <Link href="/mock-interviews" className="flex w-full justify-center">
             <p className="text-sm font-semibold text-primary-200 text-center">
               Back to dashboard
             </p>
           </Link>
-        </Button>
+        </Button> */}
 
-        <Button className="btn-primary flex-1">
+        <Button variant="default" className="btn-primary px-12">
           <Link
             href={`/mock-interview/${id}#retake`}
             className="flex w-full justify-center"
           >
-            <p className="text-sm font-semibold text-black text-center">
+            <p className="text-sm font-semibold text-center">
               Retake Interview
             </p>
           </Link>
